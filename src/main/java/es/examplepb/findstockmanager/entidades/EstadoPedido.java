@@ -6,14 +6,14 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "estado_pedido")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class EstadoPedido {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer estadoId;
-
+    private Integer Id;
+    @Column(name = "descripcion_estado")
     private String descripcionEstado;
+
 }

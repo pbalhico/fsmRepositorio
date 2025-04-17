@@ -6,11 +6,10 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "tienda")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Tienda {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tiendaId;

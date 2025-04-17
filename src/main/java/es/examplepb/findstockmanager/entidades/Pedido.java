@@ -8,14 +8,13 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @Table(name = "pedido")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Pedido {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pedidoId;
+    private Integer Id;
 
     @ManyToOne
     @JoinColumn(name = "tipo_id")
@@ -45,7 +44,11 @@ public class Pedido {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
+    @Column(name = "fecha_solicitud")
     private LocalDate fechaSolicitud;
+    @Column(name = "fecha_recepcion")
     private LocalDate fechaRecepcion;
+    @Column(name = "fecha_envio")
     private LocalDate fechaEnvio;
+
 }

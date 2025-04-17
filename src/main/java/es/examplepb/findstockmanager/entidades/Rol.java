@@ -6,11 +6,10 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "rol")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Rol {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rol_id")
@@ -18,4 +17,5 @@ public class Rol {
 
     @Column(name = "tipo_rol", length = 100)
     private String tipoRol;
+
 }

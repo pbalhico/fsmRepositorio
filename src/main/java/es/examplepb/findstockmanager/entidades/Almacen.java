@@ -6,19 +6,19 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "almacen")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Almacen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer almacenId;
+    private Integer Id;
 
     @ManyToOne
     @JoinColumn(name = "seccion_id")
     private Seccion seccion;
 
+    @Column(name = "nombre_almacen")
     private String nombreAlmacen;
+    @Column(name = "almacen_direccion")
     private String almacenDireccion;
 }

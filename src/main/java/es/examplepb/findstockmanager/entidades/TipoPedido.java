@@ -6,11 +6,10 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "tipo_pedido")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class TipoPedido {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tipoId;

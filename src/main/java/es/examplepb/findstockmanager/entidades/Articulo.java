@@ -6,22 +6,28 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "articulo")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Articulo {
+
     @Id
-    private String articuloId;
+    private String Id;
 
     @ManyToOne
     @JoinColumn(name = "seccion_id")
     private Seccion seccion;
 
+    @Column(name = "color")
     private String color;
+    @Column(name = "precio")
     private Double precio;
+    @Column(name = "talla")
     private String talla;
+    @Column(name = "nombre_articulo")
     private String nombreArticulo;
+    @Column(name = "fotografia_art")
     private String fotografiaArt;
+    @Column(name = "stock")
     private Integer stock;
+
 }
