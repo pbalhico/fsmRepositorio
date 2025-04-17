@@ -1,4 +1,4 @@
-package es.examplepb.findstockmanager;
+package es.examplepb.findstockmanager.seguridad;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
