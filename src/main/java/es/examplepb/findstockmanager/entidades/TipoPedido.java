@@ -12,7 +12,8 @@ public class TipoPedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer tipoId;
+    private Integer id;
 
+    @Column(name = "descripcion_tipo", length = 40)
     private String descripcionTipo;
 }

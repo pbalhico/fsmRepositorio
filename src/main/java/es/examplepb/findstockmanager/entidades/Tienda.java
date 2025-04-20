@@ -12,8 +12,10 @@ public class Tienda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer tiendaId;
+    private Integer id;
 
+    @Column(name = "nombre_tienda", length = 50)
     private String nombreTienda;
+    @Column(name = "tienda_direccion", length = 120)
     private String tiendaDireccion;
 }

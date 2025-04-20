@@ -11,8 +11,10 @@ import lombok.*;
 public class Seccion {
 
     @Id
-    private Integer seccionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     private String categoriaSeccion;
 }
