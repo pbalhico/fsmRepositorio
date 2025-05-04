@@ -5,11 +5,15 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Builder
+/**
+ * Clase que representa la entidad Pedido en la base de datos.
+ * Esta entidad se utiliza para almacenar los pedidos realizados por los usuarios.
+ */
 @Entity
 @Table(name = "pedido")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Pedido {
 
     @Id
@@ -24,19 +28,19 @@ public class Pedido {
     @JoinColumn(name = "estado_id")
     private EstadoPedido estado;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "origen_tienda_id")
     private Tienda origenTienda;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "destino_tienda_id")
     private Tienda destinoTienda;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "origen_almacen_id")
     private Almacen origenAlmacen;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "destino_almacen_id")
     private Almacen destinoAlmacen;
 

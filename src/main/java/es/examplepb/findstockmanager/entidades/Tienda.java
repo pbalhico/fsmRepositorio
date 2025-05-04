@@ -3,11 +3,15 @@ package es.examplepb.findstockmanager.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Builder
+/**
+ * Clase que representa la entidad Tienda en la base de datos.
+ * Esta entidad se utiliza para almacenar información sobre las tiendas.
+ */
 @Entity
 @Table(name = "tienda")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tienda {
 
     @Id

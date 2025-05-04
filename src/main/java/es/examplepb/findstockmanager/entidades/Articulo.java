@@ -3,11 +3,16 @@ package es.examplepb.findstockmanager.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Builder
+/**
+ * Clase que representa la entidad Articulo en la base de datos.
+ * Esta clase es utilizada para mapear la tabla "articulo" en la base de datos.
+ * Contiene información sobre los artículos disponibles en el sistema.
+ */
 @Entity
 @Table(name = "articulo")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Articulo {
 
     @Id

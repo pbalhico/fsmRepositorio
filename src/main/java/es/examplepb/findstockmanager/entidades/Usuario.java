@@ -3,11 +3,15 @@ package es.examplepb.findstockmanager.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Builder
+/**
+ * Clase que representa la entidad Usuario en la base de datos.
+ * Esta entidad se utiliza para almacenar los usuarios del sistema.
+ */
 @Entity
 @Table(name = "usuario")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
 
     @Id

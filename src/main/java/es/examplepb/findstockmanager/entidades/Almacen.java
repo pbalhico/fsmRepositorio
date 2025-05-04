@@ -3,11 +3,17 @@ package es.examplepb.findstockmanager.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Builder
+/**
+ * Almacen entity class representing the 'almacen' table in the database.
+ * This class is used to map the database table to a Java object.
+ * It includes fields for id, seccion, nombreAlmacen, and almacenDireccion.
+ * The class uses Lombok annotations for boilerplate code generation.
+ */
 @Entity
 @Table(name = "almacen")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Almacen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

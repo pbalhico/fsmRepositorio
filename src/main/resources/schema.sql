@@ -43,7 +43,7 @@ CREATE TABLE USUARIO (
                          apellido VARCHAR(50),
                          nif VARCHAR(9) UNIQUE,
                          email VARCHAR(50) UNIQUE,
-                         fotografia VARCHAR(200),
+                         fotografia_usuario VARCHAR(200),
                          password VARCHAR(15),
                          FOREIGN KEY (almacen_id) REFERENCES ALMACEN(id),
                          FOREIGN KEY (rol_id) REFERENCES ROL(id)
@@ -57,7 +57,7 @@ CREATE TABLE ARTICULO (
                           talla VARCHAR(3),
                           nombre_articulo VARCHAR(50),
                           stock INT,
-                          fotografiaArt VARCHAR(200),
+                          fotografia_articulo VARCHAR(200),
                           FOREIGN KEY (seccion_id) REFERENCES SECCION(id)
 );
 
