@@ -19,5 +19,24 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     // Si quisieras filtrar por rangos de fecha o combinaciones diferentes, añadirías métodos como:
     // List<Pedido> findByFechaSolicitudAfter(LocalDate date);
     // List<Pedido> findByFechaSolicitudBetween(LocalDate startDate, LocalDate endDate);
-    // List<Pedido> findByEstado_DescripcionEstadoInAndFechaSolicitudAfter(List<String> descripcionEstados, LocalDate date);
+    // List<Pedido> findByEstado_DescripcionEstadoInAndFechaSolicitudAfter(List<String> descripcionEstados, LocalDate date);;
+
+    // --- Nuevos métodos para filtrar por destino ---
+    List<Pedido> findByDestinoTiendaIsNotNull(); // Pedidos con destino a tienda (destinoAlmacen será null por cómo insertas)
+
+    List<Pedido> findByDestinoAlmacenIsNotNull(); // Pedidos con destino a almacén (destinoTienda será null)
+
+    // --- Nuevos métodos para combinaciones con Destino = Tienda ---
+    List<Pedido> findByEstado_DescripcionEstadoInAndDestinoTiendaIsNotNull(List<String> descripcionEstados);
+
+    List<Pedido> findByFechaSolicitudAndDestinoTiendaIsNotNull(LocalDate fechaSolicitud);
+
+    List<Pedido> findByEstado_DescripcionEstadoInAndFechaSolicitudAndDestinoTiendaIsNotNull(List<String> descripcionEstados, LocalDate fechaSolicitud);
+
+    // --- Nuevos métodos para combinaciones con Destino = Almacen ---
+    List<Pedido> findByEstado_DescripcionEstadoInAndDestinoAlmacenIsNotNull(List<String> descripcionEstados);
+
+    List<Pedido> findByFechaSolicitudAndDestinoAlmacenIsNotNull(LocalDate fechaSolicitud);
+
+    List<Pedido> findByEstado_DescripcionEstadoInAndFechaSolicitudAndDestinoAlmacenIsNotNull(List<String> descripcionEstados, LocalDate fechaSolicitud);
 }

@@ -14,4 +14,6 @@ public interface PedidoService {
 
     // Método para obtener pedidos filtrados por estado y/o fecha de solicitud
     List<Pedido> findAllFiltered(List<String> estados, LocalDate fechaSolicitud);
+
+    List<Pedido> findAllFiltered(List<String> estados, LocalDate fechaSolicitud, String destinoTipo);
 }
