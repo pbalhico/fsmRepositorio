@@ -37,7 +37,6 @@
 
         <div class="card-body">
             <span th:if="${param.error}" class="text-danger">Credenciales no válidas</span>
-            <span th:if="${param.logout}" class="text-success">Has cerrado sesión correctamente.</span>
 
             <form th:action="@{/login}" method="post" sec:authorize="!isAuthenticated()">
                 <div class="mb-3">
@@ -54,10 +53,6 @@
                     <button type="submit" class="btn" id="btn-login">LOGIN</button>
                 </div>
             </form>
-        </div>
-
-        <div class="card-footer text-center">
-            <p sec:authorize="isAuthenticated()">Ya has iniciado una sesión</p>
         </div>
     </div>
 </main>

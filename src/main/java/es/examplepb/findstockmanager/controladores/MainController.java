@@ -37,10 +37,12 @@ public class MainController {
                 log.info("Bienvenido, {}", usuario.getNombre()); // Log con el nombre
             });
 
+            return "index"; // Retorna la vista de bienvenida
+
         } else {
-            model.addAttribute("mensaje", "Por favor, inicia sesión.");
+            log.info("Usuario no autenticado, redirigiendo al login.");
+            return "redirect:/login";
         }
-        return "index";
     }
 
     @GetMapping("/login")
@@ -48,23 +50,7 @@ public class MainController {
         return "login"; // Devuelve la vista del formulario de login
     }
 
-    @PostMapping("/login")
-    public String procesarLogin(@RequestParam String email,
-                                @RequestParam String password,
-                                Model model) {
-        UsuarioEntity usuarioEntity = usuarioService.validarCredenciales(email, password);
-        if (usuarioEntity != null) {
-            log.info("Inicio de sesión exitoso para el usuario: {}", usuarioEntity.getEmail());
-            model.addAttribute("usuario", usuarioEntity);
-            return "redirect:/"; // Redirige a la página principal
-        } else {
-            log.warn("Credenciales inválidas para el email: {}", email);
-            model.addAttribute("error", "Credenciales inválidas. Inténtalo de nuevo.");
-            return "login"; // Vuelve al formulario de login con un mensaje de error
-        }
-    }
-
-    @GetMapping("/logout")
+    /*@GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         // Opcional: Obtener la autenticación actual (no estrictamente necesario solo para invalidar)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -76,6 +62,6 @@ public class MainController {
         }
         // Redirigir a la página de login con un parámetro para indicar logout
         return "redirect:/login?logout";
-    }
+    }*/
 
 }

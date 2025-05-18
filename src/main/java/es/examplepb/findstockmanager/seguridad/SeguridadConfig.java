@@ -59,9 +59,13 @@ public class SeguridadConfig {
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/index", true).permitAll())
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error").permitAll())
                 .logout(out -> out
-                        .logoutSuccessUrl("/login?logout").permitAll());
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true).permitAll());
         return http.build();
     }
 
