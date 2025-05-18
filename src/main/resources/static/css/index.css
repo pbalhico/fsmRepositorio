@@ -1,4 +1,5 @@
-/* CSS de index.css */
+/*
+!* CSS de index.css *!
 * {
     margin: 0;
     padding: 0;
@@ -20,13 +21,13 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     color: black;
     position: relative;
-    z-index: 100; /* Asegura que la barra superior esté encima de todo */
+    z-index: 100; !* Asegura que la barra superior esté encima de todo *!
 }
 
 .top-bar .container-fluid {
     padding: 0 1rem;
     width: 100%;
-    min-height: 65px; /* Altura mínima de la barra superior */
+    min-height: 65px; !* Altura mínima de la barra superior *!
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -55,7 +56,7 @@ body {
 }
 
 .right-icons {
-    /* Puedes añadir estilos aquí si es necesario */
+    !* Puedes añadir estilos aquí si es necesario *!
 }
 
 .menu-toggle-btn {
@@ -72,24 +73,24 @@ body {
     box-shadow: none;
 }
 
-/* Estilos para el menú hamburguesa desplegado (barra lateral) */
+!* Estilos para el menú hamburguesa desplegado (barra lateral) *!
 #menuHamburguesa {
-    background-color: #fff; /* Fondo blanco como en la imagen */
-    width: 250px; /* Ancho de la barra lateral */
-    position: fixed; /* Posicionamiento fijo en la ventana */
-    top: 65px; /* Alineado justo debajo de la barra superior (ajusta si la altura de tu top-bar es diferente) */
-    left: 0; /* Pegado al lado izquierdo */
-    height: calc(100vh - 65px); /* Ocupa el resto de la altura de la ventana */
-    overflow-y: auto; /* Añade scroll si el contenido excede la altura */
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1); /* Sombra lateral */
-    z-index: 98; /* Por encima del contenido principal, pero debajo de la top-bar */
-    transition: transform 0.3s ease-in-out; /* Animación de entrada/salida */
-    transform: translateX(-100%); /* Inicialmente fuera de la pantalla */
+    background-color: #fff; !* Fondo blanco como en la imagen *!
+    width: 250px; !* Ancho de la barra lateral *!
+    position: fixed; !* Posicionamiento fijo en la ventana *!
+    top: 65px; !* Alineado justo debajo de la barra superior (ajusta si la altura de tu top-bar es diferente) *!
+    left: 0; !* Pegado al lado izquierdo *!
+    height: calc(100vh - 65px); !* Ocupa el resto de la altura de la ventana *!
+    overflow-y: auto; !* Añade scroll si el contenido excede la altura *!
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1); !* Sombra lateral *!
+    z-index: 98; !* Por encima del contenido principal, pero debajo de la top-bar *!
+    transition: transform 0.3s ease-in-out; !* Animación de entrada/salida *!
+    transform: translateX(-100%); !* Inicialmente fuera de la pantalla *!
 }
 
-/* Estilo cuando el menú está abierto (Bootstrap añade la clase .show) */
+!* Estilo cuando el menú está abierto (Bootstrap añade la clase .show) *!
 #menuHamburguesa.show {
-    transform: translateX(0); /* Se desliza hacia adentro */
+    transform: translateX(0); !* Se desliza hacia adentro *!
 }
 
 
@@ -149,15 +150,15 @@ body {
     width: 100%;
     position: relative;
     z-index: 1;
-    /* Añadir margen izquierdo cuando el menú hamburguesa está abierto */
+    !* Añadir margen izquierdo cuando el menú hamburguesa está abierto *!
     transition: margin-left 0.3s ease-in-out;
 }
 
-/* Media query para aplicar margen al contenido principal cuando el menú hamburguesa está abierto en pantallas grandes */
+!* Media query para aplicar margen al contenido principal cuando el menú hamburguesa está abierto en pantallas grandes *!
 @media (min-width: 768px) {
-    /* Ajusta el breakpoint si es necesario */
+    !* Ajusta el breakpoint si es necesario *!
     body.menu-open .main-content-wrapper {
-        margin-left: 250px; /* El mismo ancho que el menú lateral */
+        margin-left: 250px; !* El mismo ancho que el menú lateral *!
     }
 }
 
@@ -224,8 +225,305 @@ body {
         margin-right: 0;
     }
 
-    /* En pantallas pequeñas, el menú hamburguesa puede seguir siendo de ancho completo si lo prefieres,
+    !* En pantallas pequeñas, el menú hamburguesa puede seguir siendo de ancho completo si lo prefieres,
        o puedes mantener el estilo de barra lateral. Si quieres que en móvil también sea barra lateral,
        los estilos de #menuHamburguesa de arriba ya lo hacen. Si quieres que en móvil sea diferente,
-       necesitarías media queries adicionales aquí. */
+       necesitarías media queries adicionales aquí. *!
+}
+*/
+
+/* CSS de index.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Italiana', serif;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.top-bar {
+    width: 100%;
+    background-color: #B5DAEC;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    color: black;
+    position: relative;
+    z-index: 100; /* Asegura que la barra superior esté encima de todo */
+}
+
+.top-bar .container-fluid {
+    padding: 0 1rem;
+    width: 100%;
+    min-height: 65px; /* Altura mínima de la barra superior */
+    display: flex;
+    align-items: center;
+}
+
+.left-menu-toggle {
+    /* No necesita muchos estilos, flexbox en container-fluid lo posiciona */
+}
+
+.header-title {
+    margin: 0;
+    font-size: 30px;
+    font-family: 'Italiana', serif;
+    font-weight: normal;
+    color: black;
+}
+
+.header-title a {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    text-decoration: none;
+}
+
+.header-title a:hover,
+.header-title a:focus {
+    color: inherit;
+    text-decoration: none;
+}
+
+.right-icons {
+    /* No necesita muchos estilos, flexbox en container-fluid lo posiciona a la derecha */
+}
+
+.menu-toggle-btn {
+    border: none;
+    background-color: transparent;
+    font-size: 24px;
+    color: black;
+    padding: 0;
+    margin-right: 15px; /* Añadimos margen a la derecha para separarlo del título */
+}
+
+/* Estilos para el botón del menú hamburguesa en estados hover, focus y active */
+.menu-toggle-btn:hover,
+.menu-toggle-btn:focus {
+    color: black; /* Mantiene el color del icono negro */
+    background-color: transparent; /* Mantiene el fondo transparente */
+    border-color: transparent; /* Elimina el borde */
+    box-shadow: none; /* Elimina la sombra de enfoque */
+    outline: none; /* Elimina el contorno de enfoque por defecto */
+}
+
+/* Regla específica para el estado :active (al hacer clic) */
+.menu-toggle-btn:active {
+    color: black; /* Mantiene el color del icono negro */
+    background-color: transparent !important; /* Asegura que el fondo sea transparente al hacer clic */
+    border-color: transparent !important; /* Asegura que no haya borde al hacer clic */
+    box-shadow: none !important; /* Asegura que no haya sombra al hacer clic */
+    outline: none !important; /* Asegura que no haya contorno al hacer clic */
+}
+
+
+/* CAMBIOS AQUÍ: Estilos para el icono dentro del botón en estados hover, focus y active */
+.menu-toggle-btn:hover i {
+    color: #333; /* CAMBIO AQUÍ: Cambia el color del icono a gris oscuro al pasar el ratón */
+}
+
+.menu-toggle-btn:focus i,
+.menu-toggle-btn:active i {
+    color: black; /* Asegura que el color del icono se mantenga negro al enfocar o activar */
+}
+
+/* Estilos para el menú hamburguesa desplegado (barra lateral) */
+#menuHamburguesa {
+    background-color: #fff; /* Fondo blanco como en la imagen */
+    width: 250px; /* Ancho de la barra lateral */
+    position: fixed; /* Posicionamiento fijo en la ventana */
+    top: 65px; /* Alineado justo debajo de la barra superior (ajusta si la altura de tu top-bar es diferente) */
+    left: 0; /* Pegado al lado izquierdo */
+    height: calc(100vh - 65px); /* Ocupa el resto de la altura de la ventana */
+    overflow-y: auto; /* Añade scroll si el contenido excede la altura */
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1); /* Sombra lateral */
+    z-index: 98; /* Por encima del contenido principal, pero debajo de la top-bar */
+    transition: transform 0.3s ease-in-out; /* Animación de entrada/salida */
+    transform: translateX(-100%); /* Inicialmente fuera de la pantalla */
+}
+
+/* Estilo cuando el menú está abierto (Bootstrap añade la clase .show) */
+#menuHamburguesa.show {
+    transform: translateX(0); /* Se desliza hacia adentro */
+}
+
+/* Estilos para el encabezado del menú (donde estará el botón de cerrar) */
+.menu-header {
+    background-color: #f8f9fa; /* Un color de fondo ligero para el encabezado del menú */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+/* Estilos para el botón de cerrar (X) dentro del menú */
+#menuHamburguesa .btn-close {
+    font-size: 1rem; /* Tamaño del icono X */
+}
+
+
+.menu-list {
+    padding: 0.5rem 0;
+    background-color: transparent;
+}
+
+.menu-list a {
+    text-decoration: none;
+    color: black;
+    display: block;
+    padding: 8px 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.menu-list a:last-child {
+    border-bottom: none;
+}
+
+.menu-list a:hover {
+    background-color: #f8f9fa;
+}
+
+.user-dropdown-item {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.user-dropdown-item .user-icon-link {
+    color: black;
+    font-size: 24px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.user-dropdown-item .user-icon-link:hover {
+    color: #333;
+}
+
+.user-dropdown-item .user-icon-link i {
+    margin-right: 5px;
+}
+
+.main-content-wrapper {
+    flex-grow: 1;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Media query para aplicar margen al contenido principal cuando el menú hamburguesa está abierto en pantallas grandes */
+@media (min-width: 768px) {
+    body.menu-open .main-content-wrapper {
+        margin-left: 250px; /* El mismo ancho que el menú lateral */
+    }
+}
+
+/* Estilos para el nuevo contenedor de imagen y mensaje */
+.image-container {
+    position: relative; /* Establece un contexto de posicionamiento para los elementos hijos */
+    display: inline-block; /* Permite que el contenedor se ajuste al tamaño de la imagen */
+    max-width: 100%; /* Asegura que el contenedor no exceda el ancho del padre */
+}
+
+.logo-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto; /* Centra la imagen dentro del contenedor */
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+}
+
+/* Estilos para el mensaje de bienvenida superpuesto */
+.welcome-message-overlay {
+    position: absolute; /* Posiciona el div absolutamente respecto a .image-container */
+    top: 60%; /* Mueve la parte superior del div al 50% de la altura del contenedor */
+    left: 48%; /* Mueve la parte izquierda del div al 50% del ancho del contenedor */
+    transform: translate(-50%, -50%); /* Ajusta la posición para centrar el div */
+    text-align: center; /* Centra el texto dentro del div */
+    color: black; /* Color del texto para que sea visible sobre la imagen */
+    z-index: 10; /* Asegura que el mensaje esté por encima de la imagen */
+    width: 100%; /* Opcional: haz que ocupe todo el ancho del contenedor si necesitas centrar texto largo */
+    padding: 0 1rem; /* Añade un poco de padding para que el texto no toque los bordes en pantallas pequeñas */
+}
+
+.welcome-message-overlay h1 {
+    font-size: 3rem; /* Aumenta el tamaño de la fuente */
+    margin: 0; /* Elimina el margen por defecto del h1 */
+    font-family: 'Italiana', serif; /* Usa la misma fuente que el título */
+    font-weight: bold; /* Hace la letra más negrita */
+}
+
+
+.main-content-area {
+    /* Ya no necesitas centrar el texto aquí, se centra dentro del overlay */
+    /* width: 100%; */
+    /* margin-bottom: 20px; */
+    display: none; /* Ocultamos este div ya que el h1 se movió al overlay */
+}
+
+.main-content-area h1 {
+    /* Estos estilos ya no se aplican al h1 visible */
+    /* margin-bottom: 1rem; */
+}
+
+
+.line-bottom {
+    border-bottom: 3px solid #b3d8e6;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-bar {
+    height: 33px;
+    background-color: #B5DAEC;
+    margin-top: auto;
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .header-title {
+        font-size: 24px;
+    }
+
+    .menu-toggle-btn {
+        font-size: 20px;
+    }
+
+    .user-dropdown-item .user-icon-link {
+        font-size: 20px;
+    }
+
+    .welcome-message-overlay h1 { /* Ajusta el tamaño de fuente para pantallas pequeñas */
+        font-size: 2rem; /* Ajusta el tamaño para pantallas más pequeñas */
+    }
+}
+
+@media (max-width: 767.98px) {
+    .user-dropdown-item .user-icon-link .d-md-inline {
+        display: none !important;
+    }
+
+    .user-dropdown-item .user-icon-link i {
+        margin-right: 0;
+    }
 }

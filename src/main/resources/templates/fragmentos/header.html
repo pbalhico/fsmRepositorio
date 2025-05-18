@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
@@ -20,7 +20,7 @@
 <header class="top-bar" th:fragment="headerFragment">
     <div class="container-fluid d-flex align-items-center justify-content-between">
         <div class="header-title">
-            <a th:href="@{/login}">FIND STOCK MANAGER</a>
+            <a th:href="@{/index}">FIND STOCK MANAGER</a>
         </div>
 
         <div class="right-icons d-flex align-items-center">
@@ -57,15 +57,117 @@
 
     <div class="collapse" id="menuHamburguesa">
         <div class="menu-list text-start">
-            <a th:href="@{/index}">Inicio</a> <!--comprobar que funciona-->
+            <a th:href="@{/index}">Inicio</a> &lt;!&ndash;comprobar que funciona&ndash;&gt;
             <a th:href="@{/pedidos/lista}">Listado Pedidos General</a>
             <a th:href="@{/pedidos/lista(destinoTipo='tienda')}">Listado Pedidos Tienda</a>
             <a th:href="@{/pedidos/lista(destinoTipo='almacen')}">Listado Pedidos Restock</a>
             <a th:href="@{/articulos/lista}">Listado Artículos Almacén Central</a>
-            <a th:href="@{/}">Añadir Nuevo Articulo</a> <!--hacer la vista y controlador, SOLO PARA MANAGER-->
+            <a th:href="@{/}">Añadir Nuevo Articulo</a> &lt;!&ndash;hacer la vista y controlador, SOLO PARA MANAGER&ndash;&gt;
         </div>
     </div>
 </header>
 
 </body>
-</html>
+</html>-->
+
+<header class="top-bar" th:fragment="headerFragment">
+    <div class="container-fluid d-flex align-items-center">
+        <div class="left-menu-toggle">
+            <button class="btn btn-outline-dark menu-toggle-btn" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#menuHamburguesa"
+                    aria-controls="menuHamburguesa" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i></button>
+        </div>
+
+        <div class="header-title text-center flex-grow-1">
+            <a th:href="@{/index}">FIND STOCK MANAGER</a></div>
+
+        <div class="right-icons d-flex align-items-center">
+            <li sec:authorize="isAuthenticated()" class="nav-item dropdown user-dropdown-item">
+                <a class="nav-link dropdown-toggle user-icon-link" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    <i class="fas fa-user"></i>
+                    <span class="d-none d-md-inline" th:text="${usuarioAutenticado?.nombre}">Nombre Usuario</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li sec:authorize="hasAuthority('manager')">
+                        <a class="dropdown-item" th:href="@{/admin/usuarios}" id="lnkAddUser">
+                            <i class="fas fa-user-plus"></i> Añadir Usuario
+                        </a>
+                    </li>
+                    <li sec:authorize="hasAuthority('manager')">
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/logout}" id="lnkSalir">
+                            <i class="fas fa-sign-out-alt"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+    </div>
+
+    <div class="collapse" id="menuHamburguesa">
+        <div class="menu-header d-flex align-items-center p-3">
+            <button class="btn-close text-reset me-auto" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#menuHamburguesa" aria-label="Close"></button>
+        </div>
+        <div class="menu-list text-start">
+            <a th:href="@{/index}">Inicio</a> <a th:href="@{/pedidos/lista}">Listado Pedidos General</a>
+            <a th:href="@{/pedidos/lista(destinoTipo='tienda')}">Listado Pedidos Tienda</a>
+            <a th:href="@{/pedidos/lista(destinoTipo='almacen')}">Listado Pedidos Restock</a>
+            <a th:href="@{/articulos/lista}">Listado Artículos Almacén Central</a>
+            <a th:href="@{/}">Añadir Nuevo Articulo</a></div>
+    </div>
+</header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var menuToggleBtn = document.querySelector('.menu-toggle-btn');
+        var menuHamburguesa = document.getElementById('menuHamburguesa');
+        var menuCloseBtn = document.querySelector('#menuHamburguesa .btn-close'); // Selecciona el botón de cerrar dentro del menú
+
+        // Función para alternar el icono
+        function toggleMenuIcon() {
+            var isExpanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
+            var icon = menuToggleBtn.querySelector('i');
+            if (isExpanded) {
+                // Si el menú está abierto, cambia a icono de cerrar (X)
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times'); // O fa-xmark si prefieres
+            } else {
+                // Si el menú está cerrado, cambia a icono de hamburguesa
+                icon.classList.remove('fa-times'); // O fa-xmark si prefieres
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Escuchar el evento 'show.bs.collapse' de Bootstrap (cuando el menú se abre)
+        menuHamburguesa.addEventListener('show.bs.collapse', function () {
+            // No cambiamos el icono aquí, lo hacemos al hacer clic en el botón
+        });
+
+        // Escuchar el evento 'hide.bs.collapse' de Bootstrap (cuando el menú se cierra)
+        menuHamburguesa.addEventListener('hide.bs.collapse', function () {
+            // No cambiamos el icono aquí, lo hacemos al hacer clic en el botón
+        });
+
+
+        // Escuchar el clic en el botón hamburguesa
+        menuToggleBtn.addEventListener('click', function () {
+            // Pequeño retraso para permitir que Bootstrap actualice el aria-expanded
+            setTimeout(toggleMenuIcon, 0);
+        });
+
+        // Escuchar el clic en el botón de cerrar (X) dentro del menú
+        menuCloseBtn.addEventListener('click', function () {
+            // Pequeño retraso para permitir que Bootstrap actualice el aria-expanded
+            setTimeout(toggleMenuIcon, 0);
+        });
+
+        // Inicializar el icono al cargar la página si el menú está abierto por defecto (poco común)
+        toggleMenuIcon(); // Llama a la función al cargar para establecer el icono inicial
+    });
+</script>
+
