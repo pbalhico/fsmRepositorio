@@ -12,7 +12,8 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+@Setter
+public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +21,11 @@ public class Usuario {
 
     @ManyToOne
     @JoinColumn(name = "almacen_id")
-    private Almacen almacen;
+    private AlmacenEntity almacen;
 
     @ManyToOne
     @JoinColumn(name = "rol_id")
-    private Rol rol;
+    private RolEntity rolEntity;
 
     @Column(name = "nombre", length = 50)
     private String nombre;
@@ -37,6 +38,6 @@ public class Usuario {
     private String email;
     @Column(name = "fotografia_usuario", length = 200)
     private String fotografiaUsuario;
-    @Column(name = "password", length = 15)
+    @Column(name = "password", length = 255)
     private String password;
 }

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Artículos - Find Stock Manager</title>
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/listaTienda.css}">
+    <link rel="stylesheet" th:href="@{/css/listaArticulos.css}">
+</head>
+<body>
+
+<div th:replace="~{fragmentos/header :: headerFragment}"></div>
+
+<main class="main-content container-fluid">
+    <div class="container">
+
+        <div class="row align-items-center mb-3">
+            <div class="col">
+                <h1 class="section-title">Listado de Artículos</h1>
+            </div>
+        </div>
+
+        <div class="filter-area p-3 mb-3">
+            <form method="get" th:action="@{/articulos/lista}">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-4">
+                        <label for="filterBySection" class="form-label mb-0">Sección:</label>
+                        <select class="form-select form-select-sm filter-input" id="filterBySection" name="seccionId">
+                            <option value="">Todas las secciones</option>
+                            <option th:each="seccion : ${secciones}" th:value="${seccion.id}"
+                                    th:text="${seccion.categoriaSeccion}"
+                                    th:selected="${selectedSeccionId == seccion.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="filterByName" class="form-label mb-0">Nombre:</label>
+                        <input type="text" class="form-control form-control-sm filter-input" id="filterByName"
+                               name="nombre" th:value="${selectedNombre}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sortByStock" class="form-label mb-0">Ordenar por Stock:</label>
+                        <select class="form-select form-select-sm" id="sortByStock" name="sortByStock">
+                            <option value="">Sin ordenar</option>
+                            <option value="asc" th:selected="${selectedSortByStock == 'asc'}">Ascendente</option>
+                            <option value="desc" th:selected="${selectedSortByStock == 'desc'}">Descendente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-primary btn-sm me-2">Aplicar Filtros</button>
+                        <a th:href="@{/articulos/lista}" class="btn btn-secondary btn-sm">Reset Filtros</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <h2 class="list-title">Artículos Disponibles</h2>
+
+        <div class="articles-table-container order-table-container">
+            <div class="background-logo"></div>
+
+            <table class="table table-hover order-table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Artículo</th>
+                    <th scope="col">Sección</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Talla</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="articuloEntity : ${articulos}">
+                    <td th:text="${articuloEntity.id}">ID Articulo</td>
+                    <td th:text="${articuloEntity.nombreArticulo}">Nombre Articulo</td>
+                    <td th:text="${articuloEntity.seccion?.categoriaSeccion}">Seccion</td>
+                    <td th:text="${articuloEntity.color}">Color</td>
+                    <td th:text="${articuloEntity.talla}">Talla</td>
+                    <td th:text="${articuloEntity.precio}">Precio</td>
+                    <td th:text="${articuloEntity.stock}">Stock</td>
+                    <td>
+                        <a th:href="@{|/articulos/${articuloEntity.id}|}"
+                           class="btn btn-sm btn-secondary">ver/editar</a>
+                    </td>
+                </tr>
+                <tr th:if="${articulos == null or articulos.empty}">
+                    <td colspan="8" class="text-center">No se encontraron artículos.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<footer class="footer-bar">
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

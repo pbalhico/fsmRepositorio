@@ -1,6 +1,10 @@
 package es.examplepb.findstockmanager.repositorios;
 
-import es.examplepb.findstockmanager.entidades.PedidoArticulo;
+import es.examplepb.findstockmanager.entidades.PedidoArticuloEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PedidoArticuloRepository extends JpaRepository<PedidoArticulo, Integer> {}
+import java.util.List;
+
+public interface PedidoArticuloRepository extends JpaRepository<PedidoArticuloEntity, Integer> {
+    List<PedidoArticuloEntity> findById_Pedido(Integer id);
+}

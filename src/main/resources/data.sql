@@ -16,10 +16,10 @@ VALUES ('Tienda A', 'Calle Comercio 789');
 INSERT INTO TIENDA (nombre_tienda, tienda_direccion)
 VALUES ('Tienda B', 'Plaza Central 101');
 
-INSERT INTO USUARIO (id, almacen_id, rol_id, nombre, apellido, nif, email, fotografia_usuario, password)
-VALUES (001, 1, 1, 'Juan', 'Pérez', '12345678A', 'juan.perez@example.com', 'images/persona2.jpg', 'password123');
-INSERT INTO USUARIO (id, almacen_id, rol_id, nombre, apellido, nif, email, fotografia_usuario, password)
-VALUES (002, 1, 2, 'Ana', 'García', '87654321B', 'ana.garcia@example.com', 'images/persona1.jpg', 'password456');
+INSERT INTO USUARIO (almacen_id, rol_id, nombre, apellido, nif, email, fotografia_usuario, password)
+VALUES (1, 1, 'Juan', 'Pérez', '12345678A', 'juan.perez@example.com', 'images/persona2.jpg', 'password123');
+INSERT INTO USUARIO (almacen_id, rol_id, nombre, apellido, nif, email, fotografia_usuario, password)
+VALUES (1, 2, 'Ana', 'García', '87654321B', 'ana.garcia@example.com', 'images/persona1.jpg', 'password456');
 
 INSERT INTO ARTICULO (id, seccion_id, color, precio, talla, nombre_articulo, stock, fotografia_articulo)
 VALUES ('CAMS001001', 2, 'Blanco', 19.99, 'XXS', 'Camiseta', 100, 'camiseta.jpg');

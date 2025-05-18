@@ -20,13 +20,13 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     color: black;
     position: relative;
-    z-index: 100;
+    z-index: 100; /* Asegura que la barra superior esté encima de todo */
 }
 
 .top-bar .container-fluid {
     padding: 0 1rem;
     width: 100%;
-    min-height: 65px;
+    min-height: 65px; /* Altura mínima de la barra superior */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -40,8 +40,22 @@ body {
     color: black;
 }
 
-.right-icons {
+.header-title a {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    text-decoration: none;
+}
 
+.header-title a:hover,
+.header-title a:focus {
+    color: inherit;
+    text-decoration: none;
+}
+
+.right-icons {
+    /* Puedes añadir estilos aquí si es necesario */
 }
 
 .menu-toggle-btn {
@@ -58,18 +72,26 @@ body {
     box-shadow: none;
 }
 
+/* Estilos para el menú hamburguesa desplegado (barra lateral) */
 #menuHamburguesa {
-    background-color: #fff;
-    width: 100%;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-top: none;
-    border-radius: 0 0 0.375rem 0.375rem;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 99;
+    background-color: #fff; /* Fondo blanco como en la imagen */
+    width: 250px; /* Ancho de la barra lateral */
+    position: fixed; /* Posicionamiento fijo en la ventana */
+    top: 65px; /* Alineado justo debajo de la barra superior (ajusta si la altura de tu top-bar es diferente) */
+    left: 0; /* Pegado al lado izquierdo */
+    height: calc(100vh - 65px); /* Ocupa el resto de la altura de la ventana */
+    overflow-y: auto; /* Añade scroll si el contenido excede la altura */
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1); /* Sombra lateral */
+    z-index: 98; /* Por encima del contenido principal, pero debajo de la top-bar */
+    transition: transform 0.3s ease-in-out; /* Animación de entrada/salida */
+    transform: translateX(-100%); /* Inicialmente fuera de la pantalla */
 }
+
+/* Estilo cuando el menú está abierto (Bootstrap añade la clase .show) */
+#menuHamburguesa.show {
+    transform: translateX(0); /* Se desliza hacia adentro */
+}
+
 
 .menu-list {
     padding: 0.5rem 0;
@@ -127,7 +149,18 @@ body {
     width: 100%;
     position: relative;
     z-index: 1;
+    /* Añadir margen izquierdo cuando el menú hamburguesa está abierto */
+    transition: margin-left 0.3s ease-in-out;
 }
+
+/* Media query para aplicar margen al contenido principal cuando el menú hamburguesa está abierto en pantallas grandes */
+@media (min-width: 768px) {
+    /* Ajusta el breakpoint si es necesario */
+    body.menu-open .main-content-wrapper {
+        margin-left: 250px; /* El mismo ancho que el menú lateral */
+    }
+}
+
 
 .main-content-area {
     width: 100%;
@@ -190,4 +223,9 @@ body {
     .user-dropdown-item .user-icon-link i {
         margin-right: 0;
     }
+
+    /* En pantallas pequeñas, el menú hamburguesa puede seguir siendo de ancho completo si lo prefieres,
+       o puedes mantener el estilo de barra lateral. Si quieres que en móvil también sea barra lateral,
+       los estilos de #menuHamburguesa de arriba ya lo hacen. Si quieres que en móvil sea diferente,
+       necesitarías media queries adicionales aquí. */
 }

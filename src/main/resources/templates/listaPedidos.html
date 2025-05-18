@@ -18,52 +18,7 @@
     <link rel="stylesheet" th:href="@{/css/listaTienda.css}">
 </head>
 <body>
-
-<header class="top-bar">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
-        <div class="header-title">FIND STOCK MANAGER</div>
-
-        <div class="right-icons d-flex align-items-center">
-            <button class="btn btn-outline-dark menu-toggle-btn" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#menuHamburguesa"
-                    aria-controls="menuHamburguesa" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <li sec:authorize="isAuthenticated()" class="nav-item dropdown user-dropdown-item">
-                <a class="nav-link dropdown-toggle user-icon-link" href="#" role="button" data-bs-toggle="dropdown"
-                   aria-expanded="false">
-                    <i class="fas fa-user"></i> <span class="d-none d-md-inline" th:text="${#authentication.name}">Usuario</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li sec:authorize="hasAuthority('manager')">
-                        <a class="dropdown-item" th:href="@{/admin/usuarios/nuevo}" id="lnkAddUser">
-                            <i class="fas fa-user-plus"></i> Añadir Usuario
-                        </a>
-                    </li>
-                    <li sec:authorize="hasAuthority('manager')">
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <a class="dropdown-item" th:href="@{/logout}" id="lnkSalir">
-                            <i class="fas fa-sign-out-alt"></i> Salir
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </div>
-    </div>
-
-    <div class="collapse" id="menuHamburguesa">
-        <div class="menu-list text-start">
-            <a th:href="@{/pedidos/lista}">Listado Pedidos General</a>
-            <a th:href="@{/pedidos/lista(destinoTipo='tienda')}">Listado Pedidos Tienda</a>
-            <a th:href="@{/pedidos/lista(destinoTipo='almacen')}">Listado Pedidos Restock</a>
-            <a href="#">Listado Artículos</a>
-            <!-- añadir filtros desplegable seccion, nombre articulo y por select categoria y cantidad ordenar de menor a mayor-->
-        </div>
-    </div>
-</header>
+<div th:replace="~{fragmentos/header :: headerFragment}"></div>
 
 <main class="main-content container-fluid">
     <div class="container">
@@ -119,19 +74,20 @@
             <table class="table table-hover order-table">
                 <thead>
                 <tr>
-                    <th scope="col">pedido</th>
+                    <th scope="col">pedidoEntity</th>
                     <th scope="col">estado</th>
                     <th scope="col">fecha</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="pedido : ${pedidos}">
-                    <td th:text="${pedido.id}"></td>
-                    <td th:text="${pedido.estado?.descripcionEstado}"></td>
-                    <td th:text="${pedido.fechaSolicitud}"></td>
+                <tr th:each="pedidoEntity : ${pedidos}">
+                    <td th:text="${pedidoEntity.id}"></td>
+                    <td th:text="${pedidoEntity.estado?.descripcionEstado}"></td>
+                    <td th:text="${pedidoEntity.fechaSolicitud}"></td>
                     <td>
-                        <a th:href="@{/pedidos/{id}(id=${pedido.id})}" class="btn btn-sm btn-secondary">acceder</a>
+                        <a th:href="@{/pedidos/{id}(id=${pedidoEntity.id})}"
+                           class="btn btn-sm btn-secondary">acceder</a>
                     </td>
                 </tr>
                 <tr th:if="${pedidos.empty}">

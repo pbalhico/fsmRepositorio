@@ -1,6 +1,7 @@
 package es.examplepb.findstockmanager.repositorios;
 
-import es.examplepb.findstockmanager.entidades.EstadoPedido;
+import es.examplepb.findstockmanager.entidades.EstadoPedidoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EstadoPedidoRepository extends JpaRepository<EstadoPedido, Integer> {}
+public interface EstadoPedidoRepository extends JpaRepository<EstadoPedidoEntity, Integer> {
+}

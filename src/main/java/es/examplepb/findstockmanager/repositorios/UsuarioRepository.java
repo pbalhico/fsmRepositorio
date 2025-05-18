@@ -1,12 +1,13 @@
 package es.examplepb.findstockmanager.repositorios;
 
-import es.examplepb.findstockmanager.entidades.Usuario;
+import es.examplepb.findstockmanager.entidades.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
-    Usuario findByEmail(String email);
-    Usuario findByEmailAndPassword(String email, String password);
+public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
+    //Usuario findByEmail(String email);
+    UsuarioEntity findByEmailAndPassword(String email, String password);
 
+    Optional<UsuarioEntity> findByEmail(String email);
 }

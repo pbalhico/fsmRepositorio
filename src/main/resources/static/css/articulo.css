@@ -1,0 +1,52 @@
+.article-name {
+    font-size: 2.5rem; /* Tamaño grande */
+    font-weight: bold;
+    margin-bottom: 1rem;
+    /* Considera la fuente 'Italiana' si quieres usarla aquí */
+    /* font-family: 'Italiana', sans-serif; */
+}
+
+.article-details-grid {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Columna para label, columna para valor */
+    gap: 0.5rem 1rem; /* Espacio entre filas y columnas */
+    align-items: center; /* Centrar verticalmente */
+}
+
+.article-details-grid strong {
+    grid-column: 1; /* Asegura que el label esté en la primera columna */
+    text-align: left; /* Alinea el label a la izquierda */
+}
+
+.article-details-grid span {
+    grid-column: 2; /* Asegura que el valor esté en la segunda columna */
+}
+
+.size-selection-area {
+    /* Estilos para la sección de talla y botón de reposición */
+    border-top: 1px solid #eee; /* Separador visual */
+    padding-top: 1rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column; /* Elementos apilados */
+    gap: 0.5rem; /* Espacio entre elementos */
+}
+
+/* Estilo básico para el placeholder de foto */
+.article-photo-placeholder {
+    background-color: #eee; /* Color gris claro */
+    color: #666;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px; /* Altura fija o ajusta según necesites */
+    width: 100%; /* O auto, dependiendo del contenedor */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+}
+
+.article-photo {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}

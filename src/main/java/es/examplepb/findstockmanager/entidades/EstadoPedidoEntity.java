@@ -12,7 +12,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstadoPedido {
+public class EstadoPedidoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

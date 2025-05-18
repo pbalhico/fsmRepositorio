@@ -13,14 +13,14 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Articulo {
+public class ArticuloEntity {
 
     @Id
     private String id;
 
     @ManyToOne
     @JoinColumn(name = "seccion_id")
-    private Seccion seccion;
+    private SeccionEntity seccionEntity;
 
     @Column(name = "color", length = 20)
     private String color;
@@ -30,7 +30,7 @@ public class Articulo {
     private String talla;
     @Column(name = "nombre_articulo", length = 50)
     private String nombreArticulo;
-    @Column(name = "fotografia_art", length = 200)
+    @Column(name = "fotografia_articulo", length = 200)
     private String fotografiaArt;
     @Column(name = "stock")
     private Integer stock;

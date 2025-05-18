@@ -1,6 +1,7 @@
 package es.examplepb.findstockmanager.servicios;
 
-import es.examplepb.findstockmanager.entidades.Pedido;
+import es.examplepb.findstockmanager.entidades.PedidoEntity;
+import es.examplepb.findstockmanager.entidades.PedidoArticuloEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -8,12 +9,14 @@ import java.util.List;
 
 @Service
 public interface PedidoService {
-    List<Pedido> findAll();
+    List<PedidoEntity> findAll();
 
-    Pedido findById(Integer id);
+    PedidoEntity findById(Integer id);
 
     // Método para obtener pedidos filtrados por estado y/o fecha de solicitud
-    List<Pedido> findAllFiltered(List<String> estados, LocalDate fechaSolicitud);
+    List<PedidoEntity> findAllFiltered(List<String> estados, LocalDate fechaSolicitud);
 
-    List<Pedido> findAllFiltered(List<String> estados, LocalDate fechaSolicitud, String destinoTipo);
+    List<PedidoEntity> findAllFiltered(List<String> estados, LocalDate fechaSolicitud, String destinoTipo);
+
+    List<PedidoArticuloEntity> findArticulosByPedidoId(Integer pedidoId);
 }

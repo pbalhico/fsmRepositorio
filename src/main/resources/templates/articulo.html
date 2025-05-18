@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Detalle del Artículo: ' + ${articuloEntity?.nombreArticulo} + ' - Find Stock Manager'">Detalle del
+        Artículo - Find Stock Manager</title>
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/listaTienda.css}">
+    <link rel="stylesheet" th:href="@{/css/articuloEntity.css}">
+</head>
+<body>
+
+<div th:replace="~{fragmentos/header :: headerFragment}"></div>
+
+<main class="main-content container-fluid">
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="section-title" th:text="'Artículo: ' + ${articuloEntity?.id}">Artículo</h1>
+            </div>
+        </div>
+
+        <div class="article-layout-area p-3 mb-3">
+            <div class="row">
+                <div class="col-md-5 text-center mb-3 mb-md-0">
+                    <img th:if="${articuloEntity?.fotografiaArt != null and articuloEntity?.fotografiaArt != ''}"
+                         th:src="@{'/images/' + ${articuloEntity.fotografiaArt}}"
+                         alt="Fotografía del Artículo" class="img-fluid rounded article-photo">
+                    <div th:unless="${articuloEntity?.fotografiaArt != null and articuloEntity?.fotografiaArt != ''}"
+                         class="article-photo-placeholder rounded">
+                        <span>Sin Foto</span>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <h2 class="article-name" th:text="${articuloEntity?.nombreArticulo}">NOMBRE</h2>
+
+                    <div class="article-details-grid mb-4">
+                        <strong>ID:</strong> <span th:text="${articuloEntity?.id}">ID Articulo</span>
+                        <strong>Categoría:</strong> <span th:text="${articuloEntity?.seccion?.categoriaSeccion}">Sección del Artículo</span>
+                        <strong>Color:</strong> <span th:text="${articuloEntity?.color}">Color</span>
+                        <strong>Precio:</strong> <span th:text="${articuloEntity?.precio} + ' €'">Precio</span>
+                    </div>
+
+                    <div class="size-selection-area">
+                        <label for="selectTalla" class="form-label mb-0">Talla:</label>
+                        <select class="form-select form-select-sm" id="selectTalla">
+                            <option value="">selecciona la talla</option>
+                            <option th:each="tallaDisponible : ${tallasDisponibles}" th:value="${tallaDisponible}"
+                                    th:text="${tallaDisponible}"></option>
+                            <option th:if="${articuloEntity?.talla}" th:value="${articuloEntity?.talla}"
+                                    th:text="${articuloEntity?.talla}" selected></option>
+
+                        </select>
+
+                        <button class="btn btn-primary mt-2">pedir reposicion</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/articulos/lista}" class="btn btn-secondary btn-lg me-2">Volver al Listado</a>
+        </div>
+
+    </div>
+</main>
+
+<footer class="footer-bar">
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

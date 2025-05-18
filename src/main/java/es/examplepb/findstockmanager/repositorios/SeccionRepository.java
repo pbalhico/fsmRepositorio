@@ -1,6 +1,7 @@
 package es.examplepb.findstockmanager.repositorios;
 
-import es.examplepb.findstockmanager.entidades.Seccion;
+import es.examplepb.findstockmanager.entidades.SeccionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SeccionRepository extends JpaRepository<Seccion, Integer> {}
+public interface SeccionRepository extends JpaRepository<SeccionEntity, Integer> {
+}

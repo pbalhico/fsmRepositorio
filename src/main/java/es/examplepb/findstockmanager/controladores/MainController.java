@@ -1,6 +1,6 @@
 package es.examplepb.findstockmanager.controladores;
 
-import es.examplepb.findstockmanager.entidades.Usuario;
+import es.examplepb.findstockmanager.entidades.UsuarioEntity;
 import es.examplepb.findstockmanager.servicios.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.stereotype.Controller;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller //intermediaria, la parte c del mvc
@@ -26,9 +27,16 @@ public class MainController {
     @GetMapping({"", "/index"})
     public String bienvenida(Authentication authentication, Model model) {
         if (authentication != null && authentication.isAuthenticated()) {
-            String usuario = authentication.getName();
-            log.info("Bienvenido, {}", usuario);
-            model.addAttribute("mensaje", "Bienvenido, " + usuario + "!");
+            String username = authentication.getName(); // Obtiene el username (email)
+
+            Optional<UsuarioEntity> usuarioAutenticadoOptional = usuarioService.findByEmail(username);
+
+            // Si el usuario se encuentra, lo añadimos al modelo con el nombre 'usuarioAutenticado'
+            usuarioAutenticadoOptional.ifPresent(usuario -> {
+                model.addAttribute("usuarioAutenticado", usuario);
+                log.info("Bienvenido, {}", usuario.getNombre()); // Log con el nombre
+            });
+
         } else {
             model.addAttribute("mensaje", "Por favor, inicia sesión.");
         }
@@ -44,10 +52,10 @@ public class MainController {
     public String procesarLogin(@RequestParam String email,
                                 @RequestParam String password,
                                 Model model) {
-        Usuario usuario = usuarioService.validarCredenciales(email, password);
-        if (usuario != null) {
-            log.info("Inicio de sesión exitoso para el usuario: {}", usuario.getEmail());
-            model.addAttribute("usuario", usuario);
+        UsuarioEntity usuarioEntity = usuarioService.validarCredenciales(email, password);
+        if (usuarioEntity != null) {
+            log.info("Inicio de sesión exitoso para el usuario: {}", usuarioEntity.getEmail());
+            model.addAttribute("usuario", usuarioEntity);
             return "redirect:/"; // Redirige a la página principal
         } else {
             log.warn("Credenciales inválidas para el email: {}", email);

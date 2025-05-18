@@ -14,7 +14,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Almacen {
+public class AlmacenEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id") //no deberia hacer falta añadir el column si se va a llamar igual que en la base de datos
@@ -22,7 +22,7 @@ public class Almacen {
 
     @ManyToOne
     @JoinColumn(name = "seccion_id")
-    private Seccion seccion;
+    private SeccionEntity seccionEntity;
 
     @Column(name = "nombre_almacen", length = 50)
     private String nombreAlmacen;

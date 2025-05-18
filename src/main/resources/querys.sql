@@ -1,12 +1,12 @@
 -- Consulta para verificar los pedidos y sus detalles
-SELECT p.id AS pedido_id,
-       tp.descripcion_tipo AS tipo_pedido,
+SELECT p.id                  AS pedido_id,
+       tp.descripcion_tipo   AS tipo_pedido,
        ep.descripcion_estado AS estado_pedido,
-       t1.nombre_tienda AS origen_tienda,
-       t2.nombre_tienda AS destino_tienda,
-       a1.nombre_almacen AS origen_almacen,
-       a2.nombre_almacen AS destino_almacen,
-       u.nombre AS usuario,
+       t1.nombre_tienda      AS origen_tienda,
+       t2.nombre_tienda      AS destino_tienda,
+       a1.nombre_almacen     AS origen_almacen,
+       a2.nombre_almacen     AS destino_almacen,
+       u.nombre              AS usuarioEntity,
        p.fecha_solicitud,
        p.fecha_recepcion,
        p.fecha_envio
@@ -19,7 +19,7 @@ FROM PEDIDO p
          LEFT JOIN ALMACEN a2 ON p.destino_almacen_id = a2.id
          LEFT JOIN USUARIO u ON p.usuario_id = u.id;
 
--- Consulta para verificar los artículos de un pedido específico
+-- Consulta para verificar los artículos de un pedidoEntity específico
 SELECT pa.articulo_id,
        a.nombre_articulo,
        pa.cantidad_pedido_articulo,

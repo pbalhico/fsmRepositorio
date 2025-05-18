@@ -1,0 +1,19 @@
+.order-details-area {
+    background-color: #e9e9e9;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.order-details-area p {
+    margin-bottom: 0.5rem;
+}
+
+.order-details-area p:last-child {
+    margin-bottom: 0;
+}
+
+.item-added-checkbox {
+    /* Estilos opcionales para la casilla de verificación */
+}

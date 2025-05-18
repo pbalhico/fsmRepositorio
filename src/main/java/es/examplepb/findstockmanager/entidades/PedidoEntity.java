@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pedido {
+public class PedidoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,31 +22,31 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "tipo_id")
-    private TipoPedido tipo;
+    private TipoPedidoEntity tipo;
 
     @ManyToOne
     @JoinColumn(name = "estado_id")
-    private EstadoPedido estado;
+    private EstadoPedidoEntity estado;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "origen_tienda_id")
-    private Tienda origenTienda;
+    private TiendaEntity origenTiendaEntity;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "destino_tienda_id")
-    private Tienda destinoTienda;
+    private TiendaEntity destinoTiendaEntity;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "origen_almacen_id")
-    private Almacen origenAlmacen;
+    private AlmacenEntity origenAlmacenEntity;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "destino_almacen_id")
-    private Almacen destinoAlmacen;
+    private AlmacenEntity destinoAlmacenEntity;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    private UsuarioEntity usuarioEntity;
 
     @Column(name = "fecha_solicitud")
     private LocalDate fechaSolicitud;
