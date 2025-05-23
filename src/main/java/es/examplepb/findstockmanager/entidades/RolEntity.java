@@ -22,4 +22,9 @@ public class RolEntity {
     @Column(name = "tipo_rol", length = 10)
     private String tipoRol;
 
+    // Constructor para facilidad de inicialización
+    public RolEntity(String tipoRol) {
+        this.tipoRol = tipoRol;
+    }
+
 }

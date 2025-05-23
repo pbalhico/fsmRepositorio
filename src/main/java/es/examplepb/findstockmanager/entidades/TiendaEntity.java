@@ -16,10 +16,21 @@ public class TiendaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "nombre_tienda", length = 50)
     private String nombreTienda;
     @Column(name = "tienda_direccion", length = 120)
     private String tiendaDireccion;
+
+    // Constructor para facilidad de inicialización (si solo necesitas el ID y nombre)
+    public TiendaEntity(Long id, String nombreTienda) {
+        this.id = id;
+        this.nombreTienda = nombreTienda;
+    }
+
+    // Constructor mínimo para pruebas o casos donde solo se conoce el ID
+    public TiendaEntity(Long id) {
+        this.id = id;
+    }
 }

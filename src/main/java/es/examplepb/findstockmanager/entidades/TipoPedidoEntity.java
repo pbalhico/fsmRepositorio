@@ -18,6 +18,11 @@ public class TipoPedidoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "descripcion_tipo", length = 40)
+    @Column(name = "descripcion_tipo", length = 40, unique = true, nullable = false)
     private String descripcionTipo;
+
+    // Constructor para facilidad de inicialización
+    public TipoPedidoEntity(String descripcionTipo) {
+        this.descripcionTipo = descripcionTipo;
+    }
 }

@@ -17,7 +17,16 @@ public class EstadoPedidoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "descripcion_estado", length = 100)
+    @Column(name = "descripcion_estado", length = 100, unique = true, nullable = false)
     private String descripcionEstado;
 
+    /* 3 tipos de estados:
+    1. Pendiente
+    2. En tramite
+    3. Completado
+     */
+
+    public EstadoPedidoEntity(String descripcionEstado) {
+        this.descripcionEstado = descripcionEstado;
+    }
 }

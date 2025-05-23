@@ -40,7 +40,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void save(final UsuarioDto usuarioDto) {
         //AlmacenEntity almacenEntity = almacenRepository.findByNombreAlmacen(usuarioDto.getNombreAlmacen());
-        UsuarioEntity usuarioEntity = usuarioMapper.toUsuarioEntity(usuarioDto);
+        UsuarioEntity usuarioEntity = usuarioMapper.toEntity(usuarioDto);
 
         String rawPassword = usuarioDto.getPassword();
         // Codificar la contraseña usando el PasswordEncoder (BCryptPasswordEncoder)
