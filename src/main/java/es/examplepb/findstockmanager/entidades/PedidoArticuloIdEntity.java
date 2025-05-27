@@ -17,6 +17,6 @@ public class PedidoArticuloIdEntity implements Serializable {
     @Column(name = "articulo_id")
     private String articulo;
     @Column(name = "pedido_id")
-    private Integer pedido;
+    private Integer pedidoId;
 
 }

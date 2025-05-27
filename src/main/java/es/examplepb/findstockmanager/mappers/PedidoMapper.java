@@ -18,7 +18,6 @@ public interface PedidoMapper {
     @Mapping(source = "destinoTiendaEntity.nombreTienda", target = "nombreDestinoTienda")
     @Mapping(source = "origenAlmacenEntity.nombreAlmacen", target = "nombreOrigenAlmacen")
     @Mapping(source = "destinoAlmacenEntity.nombreAlmacen", target = "nombreDestinoAlmacen")
-    @Mapping(source = "usuarioEntity.nombre", target = "nombreUsuario")
     // Se asume que los artículos serán mapeados por un método separado si es necesario cargar la lista completa
     @Mapping(target = "articulos", ignore = true)
         // Ignorar por ahora para evitar carga cíclica o N+1

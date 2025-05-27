@@ -28,6 +28,11 @@ public class ArticuloServiceImpl implements ArticuloService {
     private final ArticuloRepository articuloRepository;
 
     @Override
+    public List<ArticuloEntity> findAll() {
+        return articuloRepository.findAll(); // Implementación simple
+    }
+
+    @Override
     public ArticuloEntity findById(String id) {
         log.info("Buscando artículo con ID: {}", id);
         // Usa el repositorio para buscar por ID. JpaRepository ya proporciona findById.

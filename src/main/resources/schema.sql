@@ -88,7 +88,6 @@ CREATE TABLE PEDIDO
     destino_tienda_id  INT NULL,
     origen_almacen_id  INT NULL,
     destino_almacen_id INT NULL,
-    usuario_id         INT,
     fecha_solicitud    DATE,
     fecha_recepcion    DATE,
     fecha_envio        DATE,
@@ -97,8 +96,7 @@ CREATE TABLE PEDIDO
     FOREIGN KEY (origen_tienda_id) REFERENCES TIENDA (id),
     FOREIGN KEY (destino_tienda_id) REFERENCES TIENDA (id),
     FOREIGN KEY (origen_almacen_id) REFERENCES ALMACEN (id),
-    FOREIGN KEY (destino_almacen_id) REFERENCES ALMACEN (id),
-    FOREIGN KEY (usuario_id) REFERENCES USUARIO (id)
+    FOREIGN KEY (destino_almacen_id) REFERENCES ALMACEN (id)
 );
 
 CREATE TABLE PEDIDO_ARTICULO
@@ -107,6 +105,7 @@ CREATE TABLE PEDIDO_ARTICULO
     pedido_id                INT,
     cantidad_pedido_articulo INT,
     importe_total            DOUBLE,
+    recibido                 BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (articulo_id, pedido_id),
     FOREIGN KEY (articulo_id) REFERENCES ARTICULO (id),
     FOREIGN KEY (pedido_id) REFERENCES PEDIDO (id)

@@ -45,7 +45,7 @@ public class PedidoScheduler {
     private final PedidoArticuloRepository pedidoArticuloRepository;
     private final TipoPedidoRepository tipoPedidoRepository;
     private final EstadoPedidoRepository estadoPedidoRepository;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository; // Se mantiene si se usa para buscar el usuario del sistema
     private final AlmacenRepository almacenRepository;
     private final TiendaRepository tiendaRepository;
 
@@ -77,18 +77,19 @@ public class PedidoScheduler {
         }
         EstadoPedidoEntity estadoPendiente = estadoPendienteOpt.get();
 
-        // Obtener el usuario del sistema
+        // Obtener el usuario del sistema (se mantiene la búsqueda si se necesita para otros fines, pero no se asigna al Pedido)
         Optional<UsuarioEntity> usuarioSistemaOpt = usuarioRepository.findByEmail(Constants.SYSTEM_USER_EMAIL);
         if (usuarioSistemaOpt.isEmpty()) {
             log.error("No se encontró el usuario del sistema con email '{}'. No se pueden generar pedidos de reposición.", Constants.SYSTEM_USER_EMAIL);
             return;
         }
-        UsuarioEntity usuarioSistema = usuarioSistemaOpt.get();
+        UsuarioEntity usuarioSistema = usuarioSistemaOpt.get(); // Se obtiene, pero no se usará para setear en PedidoEntity
 
         // Obtener el almacén de destino (el único almacén existente)
-        Optional<AlmacenEntity> almacenOpt = almacenRepository.findById(Constants.ALMACEN_ID);
+        // CORREGIDO: Buscar por nombre en lugar de ID fijo
+        Optional<AlmacenEntity> almacenOpt = almacenRepository.findByNombreAlmacen("Almacén Principal");
         if (almacenOpt.isEmpty()) {
-            log.error("No se encontró el almacén con ID {}. No se pueden generar pedidos de reposición.", Constants.ALMACEN_ID);
+            log.error("No se encontró el almacén con nombre 'Almacén Principal'. No se pueden generar pedidos de reposición.");
             return;
         }
         AlmacenEntity almacenDestino = almacenOpt.get();
@@ -114,7 +115,7 @@ public class PedidoScheduler {
             nuevoPedido.setDestinoTiendaEntity(null);
             nuevoPedido.setOrigenAlmacenEntity(almacenDestino); // Origen es el mismo almacén para reposición
             nuevoPedido.setDestinoAlmacenEntity(almacenDestino); // Destino es el almacén
-            nuevoPedido.setUsuarioEntity(usuarioSistema);
+            // ELIMINADO: nuevoPedido.setUsuarioEntity(usuarioSistema); // Esta línea ha sido eliminada
             nuevoPedido.setFechaSolicitud(LocalDate.now());
             nuevoPedido.setFechaRecepcion(null);
             nuevoPedido.setFechaEnvio(null);
@@ -126,17 +127,13 @@ public class PedidoScheduler {
             PedidoArticuloIdEntity pedidoArticuloId = new PedidoArticuloIdEntity(articulo.getId(), pedidoGuardado.getId());
             PedidoArticuloEntity lineaPedido = new PedidoArticuloEntity();
             lineaPedido.setId(pedidoArticuloId);
-            // CORRECCIÓN: Establecer explícitamente las entidades relacionadas para la clave compuesta
-            lineaPedido.setPedidoEntity(pedidoGuardado); // ¡IMPORTANTE! Reañadido
-            lineaPedido.setArticuloEntity(articulo);     // ¡IMPORTANTE! Reañadido
+            lineaPedido.setPedidoEntity(pedidoGuardado);
+            lineaPedido.setArticuloEntity(articulo);
             lineaPedido.setCantidadPedidoArticulo(cantidadNecesaria);
             lineaPedido.setImporteTotal(articulo.getPrecio() * cantidadNecesaria);
 
             pedidoArticuloRepository.save(lineaPedido);
             log.info("Línea de pedido de reposición creada para artículo {} con cantidad {}", articulo.getNombreArticulo(), cantidadNecesaria);
-
-            // Opcional: Actualizar el stock del artículo si el pedido se considera "en proceso" o "completado"
-            // Por ahora, solo se crea el pedido. La actualización de stock se haría al "procesar" el pedido.
         }
         log.info("Tarea programada: Generación de Pedidos de Reposición de Stock finalizada.");
     }
@@ -173,26 +170,28 @@ public class PedidoScheduler {
         }
         EstadoPedidoEntity estadoPendiente = estadoPendienteOpt.get();
 
-        // Obtener el usuario del sistema
+        // Obtener el usuario del sistema (se mantiene la búsqueda si se necesita para otros fines, pero no se asigna al Pedido)
         Optional<UsuarioEntity> usuarioSistemaOpt = usuarioRepository.findByEmail(Constants.SYSTEM_USER_EMAIL);
         if (usuarioSistemaOpt.isEmpty()) {
             log.error("No se encontró el usuario del sistema con email '{}'. No se pueden generar pedidos a tienda.", Constants.SYSTEM_USER_EMAIL);
             return;
         }
-        UsuarioEntity usuarioSistema = usuarioSistemaOpt.get();
+        UsuarioEntity usuarioSistema = usuarioSistemaOpt.get(); // Se obtiene, pero no se usará para setear en PedidoEntity
 
         // Obtener el almacén de origen (el único almacén existente)
-        Optional<AlmacenEntity> almacenOrigenOpt = almacenRepository.findById(Constants.ALMACEN_ID);
+        // CORREGIDO: Buscar por nombre en lugar de ID fijo
+        Optional<AlmacenEntity> almacenOrigenOpt = almacenRepository.findByNombreAlmacen("Almacén Principal");
         if (almacenOrigenOpt.isEmpty()) {
-            log.error("No se encontró el almacén con ID {}. No se pueden generar pedidos a tienda.", Constants.ALMACEN_ID);
+            log.error("No se encontró el almacén con nombre 'Almacén Principal'. No se pueden generar pedidos a tienda.");
             return;
         }
         AlmacenEntity almacenOrigen = almacenOrigenOpt.get();
 
         // Obtener la tienda de destino (la única tienda existente)
-        Optional<TiendaEntity> tiendaDestinoOpt = tiendaRepository.findById(Constants.TIENDA_ID);
+        // CORREGIDO: Buscar por nombre en lugar de ID fijo
+        Optional<TiendaEntity> tiendaDestinoOpt = tiendaRepository.findByNombreTienda("Tienda A");
         if (tiendaDestinoOpt.isEmpty()) {
-            log.error("No se encontró la tienda con ID {}. No se pueden generar pedidos a tienda.", Constants.TIENDA_ID);
+            log.error("No se encontró la tienda con nombre 'Tienda A'. No se pueden generar pedidos a tienda.");
             return;
         }
         TiendaEntity tiendaDestino = tiendaDestinoOpt.get();
@@ -206,7 +205,7 @@ public class PedidoScheduler {
         nuevoPedido.setDestinoTiendaEntity(tiendaDestino); // Destino es la tienda
         nuevoPedido.setOrigenAlmacenEntity(almacenOrigen); // Origen es el almacén
         nuevoPedido.setDestinoAlmacenEntity(null);
-        nuevoPedido.setUsuarioEntity(usuarioSistema);
+        // ELIMINADO: nuevoPedido.setUsuarioEntity(usuarioSistema); // Esta línea ha sido eliminada
         nuevoPedido.setFechaSolicitud(LocalDate.now());
         nuevoPedido.setFechaRecepcion(null);
         nuevoPedido.setFechaEnvio(null);
@@ -222,38 +221,28 @@ public class PedidoScheduler {
             int randomIndex = random.nextInt(todosLosArticulos.size());
             ArticuloEntity articuloAleatorio = todosLosArticulos.get(randomIndex);
 
-            // Asegurarse de no añadir el mismo artículo dos veces en el mismo pedido si no se desea
             if (!articulosSeleccionados.contains(articuloAleatorio)) {
                 articulosSeleccionados.add(articuloAleatorio);
             } else {
-                // Si ya está, intenta otra vez o simplemente ignora si ya se han hecho suficientes intentos
-                // Para este ejemplo, simplemente permite duplicados o intenta un par de veces más.
-                // Para evitar bucles infinitos en listas pequeñas, se podría limitar los intentos.
-                if (todosLosArticulos.size() > articulosSeleccionados.size()) { // Evitar bucle infinito si todos son iguales
-                    i--; // Decrementa i para intentar añadir otro artículo
+                if (todosLosArticulos.size() > articulosSeleccionados.size()) {
+                    i--;
                 }
             }
         }
 
         for (ArticuloEntity articulo : articulosSeleccionados) {
-            // Cantidad aleatoria entre 1 y MAX_UNIDADES_POR_ARTICULO_PEDIDO_TIENDA (100)
             int cantidad = random.nextInt(Constants.MAX_UNIDADES_POR_ARTICULO_PEDIDO_TIENDA) + 1;
 
-            // Crear la línea del pedido
             PedidoArticuloIdEntity pedidoArticuloId = new PedidoArticuloIdEntity(articulo.getId(), pedidoGuardado.getId());
             PedidoArticuloEntity lineaPedido = new PedidoArticuloEntity();
             lineaPedido.setId(pedidoArticuloId);
-            // CORRECCIÓN: Establecer explícitamente las entidades relacionadas para la clave compuesta
-            lineaPedido.setPedidoEntity(pedidoGuardado); // ¡IMPORTANTE! Reañadido
-            lineaPedido.setArticuloEntity(articulo);     // ¡IMPORTANTE! Reañadido
+            lineaPedido.setPedidoEntity(pedidoGuardado);
+            lineaPedido.setArticuloEntity(articulo);
             lineaPedido.setCantidadPedidoArticulo(cantidad);
             lineaPedido.setImporteTotal(articulo.getPrecio() * cantidad);
 
             pedidoArticuloRepository.save(lineaPedido);
             log.info("Línea de pedido a tienda creada para artículo {} con cantidad {}", articulo.getNombreArticulo(), cantidad);
-
-            // Opcional: Reducir el stock del artículo si el pedido se considera "en proceso" o "enviado"
-            // Por ahora, solo se crea el pedido. La reducción de stock se haría al "procesar" el pedido.
         }
         log.info("Tarea programada: Generación de Pedidos a Tienda finalizada.");
     }

@@ -4,7 +4,9 @@ import es.examplepb.findstockmanager.entidades.AlmacenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AlmacenRepository extends JpaRepository<AlmacenEntity, Long> {
-    AlmacenEntity findByNombreAlmacen(String nombreAlmacen);
+    Optional<AlmacenEntity> findByNombreAlmacen(String nombreAlmacen);
 }

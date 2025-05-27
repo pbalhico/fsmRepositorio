@@ -1,3 +1,4 @@
+// src/main/java/es/examplepb/findstockmanager/util/Constants.java
 package es.examplepb.findstockmanager.util;
 
 /**
@@ -11,9 +12,8 @@ public final class Constants {
     }
 
     // IDs fijos para entidades predefinidas (de application.properties)
-    public static final Long ALMACEN_ID = 1L;
-    public static final Long TIENDA_ID = 1L;
-    public static final Long SYSTEM_USER_ID = 999L;
+    // ELIMINADOS: ALMACEN_ID y TIENDA_ID ya que ahora son auto-generados por la DB.
+    public static final Long SYSTEM_USER_ID = 999L; // Este ID se usa para referencia, pero el usuario se busca por email
 
     // Nombres de roles predefinidos (de data.sql)
     public static final String ROL_SYSTEM = "system";

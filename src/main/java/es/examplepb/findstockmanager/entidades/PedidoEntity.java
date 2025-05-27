@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase que representa la entidad Pedido en la base de datos.
@@ -24,7 +26,7 @@ public class PedidoEntity {
     @JoinColumn(name = "tipo_id")
     private TipoPedidoEntity tipo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estado_id")
     private EstadoPedidoEntity estado;
 
@@ -44,15 +46,27 @@ public class PedidoEntity {
     @JoinColumn(name = "destino_almacen_id")
     private AlmacenEntity destinoAlmacenEntity;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private UsuarioEntity usuarioEntity;
-
     @Column(name = "fecha_solicitud")
     private LocalDate fechaSolicitud;
     @Column(name = "fecha_recepcion")
     private LocalDate fechaRecepcion;
     @Column(name = "fecha_envio")
     private LocalDate fechaEnvio;
+
+    @OneToMany(mappedBy = "pedidoEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PedidoArticuloEntity> pedidoArticulos = new ArrayList<>();
+
+    public void addPedidoArticulo(PedidoArticuloEntity pedidoArticulo) {
+        if (pedidoArticulos == null) {
+            pedidoArticulos = new ArrayList<>();
+        }
+        pedidoArticulos.add(pedidoArticulo);
+        pedidoArticulo.setPedidoEntity(this); // Establece la referencia al pedido
+    }
+
+    public void removePedidoArticulo(PedidoArticuloEntity pedidoArticulo) {
+        pedidoArticulos.remove(pedidoArticulo);
+        pedidoArticulo.setPedidoEntity(null);
+    }
 
 }
