@@ -24,13 +24,9 @@ public final class Constants {
     // Descripciones de estados de pedido predefinidos (de data.sql)
     public static final String ESTADO_PENDIENTE = "Pendiente";
     public static final String ESTADO_COMPLETADO = "Completado";
-    public static final String ESTADO_ENVIADO = "Enviado";
-    public static final String ESTADO_CANCELADO = "Cancelado";
-    public static final String ESTADO_EN_PROCESO = "En Proceso";
-
+    public static final String ESTADO_ENTRAMITE = "En tramite";
 
     // Descripciones de tipos de pedido predefinidos (de data.sql)
-    public static final String TIPO_TIENDA_ALMACEN = "tienda-almacen";
     public static final String TIPO_ALMACEN_TIENDA = "almacen-tienda";
     public static final String TIPO_REPOSICION_STOCK_ALMACEN = "reposicion stock almacen";
 

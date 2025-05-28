@@ -1,75 +1,3 @@
-<!--<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina de inicio</title>
-    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" th:href="@{/css/index.css}">
-</head>
-<body>
-
-<header class="top-bar" th:fragment="headerFragment">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
-        <div class="header-title">
-            <a th:href="@{/index}">FIND STOCK MANAGER</a>
-        </div>
-
-        <div class="right-icons d-flex align-items-center">
-            <button class="btn btn-outline-dark menu-toggle-btn" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#menuHamburguesa"
-                    aria-controls="menuHamburguesa" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <li sec:authorize="isAuthenticated()" class="nav-item dropdown user-dropdown-item">
-                <a class="nav-link dropdown-toggle user-icon-link" href="#" role="button" data-bs-toggle="dropdown"
-                   aria-expanded="false">
-                    <i class="fas fa-user"></i>
-                    <span class="d-none d-md-inline" th:text="${usuarioAutenticado?.nombre}">Nombre Usuario</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li sec:authorize="hasAuthority('manager')">
-                        <a class="dropdown-item" th:href="@{/admin/usuarios}" id="lnkAddUser">
-                            <i class="fas fa-user-plus"></i> Añadir Usuario
-                        </a>
-                    </li>
-                    <li sec:authorize="hasAuthority('manager')">
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <a class="dropdown-item" th:href="@{/logout}" id="lnkSalir">
-                            <i class="fas fa-sign-out-alt"></i> Salir
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </div>
-    </div>
-
-    <div class="collapse" id="menuHamburguesa">
-        <div class="menu-list text-start">
-            <a th:href="@{/index}">Inicio</a> &lt;!&ndash;comprobar que funciona&ndash;&gt;
-            <a th:href="@{/pedidos/lista}">Listado Pedidos General</a>
-            <a th:href="@{/pedidos/lista(destinoTipo='tienda')}">Listado Pedidos Tienda</a>
-            <a th:href="@{/pedidos/lista(destinoTipo='almacen')}">Listado Pedidos Restock</a>
-            <a th:href="@{/articulos/lista}">Listado Artículos Almacén Central</a>
-            <a th:href="@{/}">Añadir Nuevo Articulo</a> &lt;!&ndash;hacer la vista y controlador, SOLO PARA MANAGER&ndash;&gt;
-        </div>
-    </div>
-</header>
-
-</body>
-</html>-->
-
 <header class="top-bar" th:fragment="headerFragment">
     <div class="container-fluid d-flex align-items-center">
         <div class="left-menu-toggle">
@@ -109,17 +37,29 @@
     </div>
 
     <div class="collapse" id="menuHamburguesa">
-        <div class="menu-header d-flex align-items-center p-3">
-            <button class="btn-close text-reset me-auto" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#menuHamburguesa" aria-label="Close"></button>
-        </div>
         <div class="menu-list text-start">
             <a th:href="@{/index}">Inicio</a>
             <a th:href="@{/pedidos/lista}">Listado Pedidos General</a>
-            <a th:href="@{/pedidos/lista(destinoTipo='tienda')}">Listado Pedidos Tienda</a>
-            <a th:href="@{/pedidos/lista(destinoTipo='almacen')}">Listado Pedidos Restock</a>
+
+            <a th:href="@{/pedidos/lista(destinoTipo='tienda')}"
+               th:class="${conteoPedidosTiendaPendientes ge 5} ? 'text-danger' : (${conteoPedidosTiendaPendientes ge 1} ? 'text-warning' : 'text-success')">
+                Listado Pedidos Tienda
+                <span th:if="${conteoPedidosTiendaPendientes > 0}"
+                      th:text="' (' + ${conteoPedidosTiendaPendientes} + ')'"
+                      class="badge bg-secondary"></span>
+            </a>
+
+            <a th:href="@{/pedidos/lista(destinoTipo='almacen')}"
+               th:class="${conteoPedidosRestockPendientes ge 5} ? 'text-danger' : (${conteoPedidosRestockPendientes ge 1} ? 'text-warning' : 'text-success')">
+                Listado Pedidos Restock
+                <span th:if="${conteoPedidosRestockPendientes > 0}"
+                      th:text="' (' + ${conteoPedidosRestockPendientes} + ')'"
+                      class="badge bg-secondary"></span>
+            </a>
+
             <a th:href="@{/articulos/lista}">Listado Artículos Almacén Central</a>
-            <a th:href="@{/}">Añadir Nuevo Articulo</a></div>
+            <a th:href="@{/}">Añadir Nuevo Articulo</a>
+        </div>
     </div>
 </header>
 

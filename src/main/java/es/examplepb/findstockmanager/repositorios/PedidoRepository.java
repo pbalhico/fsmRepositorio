@@ -1,8 +1,12 @@
 package es.examplepb.findstockmanager.repositorios;
 
+import es.examplepb.findstockmanager.entidades.EstadoPedidoEntity;
 import es.examplepb.findstockmanager.entidades.PedidoEntity;
+import es.examplepb.findstockmanager.entidades.TipoPedidoEntity;
 import org.springframework.data.jpa.repository.EntityGraph; // Import this!
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -40,4 +44,14 @@ public interface PedidoRepository extends JpaRepository<PedidoEntity, Integer> {
     List<PedidoEntity> findByEstado_DescripcionEstadoInAndFechaSolicitudAndDestinoAlmacenEntityIsNotNull(List<String> descripcionEstados, LocalDate fechaSolicitud);
 
     Optional<PedidoEntity> findTopByOrderByFechaSolicitudDesc();
+
+    // Contar pedidos por tipo y estado (PENDIENTE o EN TRAMITE)
+    @Query("SELECT COUNT(p) FROM PedidoEntity p WHERE p.tipo = :tipo AND (p.estado.descripcionEstado = 'Pendiente' OR p.estado.descripcionEstado = 'En Tramite')")
+    long countPedidosPendientesEnTramiteByTipo(@Param("tipo") TipoPedidoEntity tipo);
+
+    // Si quieres contar solo por estado (útil para el general, aunque no lo necesites coloreado)
+    long countByEstado(EstadoPedidoEntity estado);
+
+    // Puedes necesitar también encontrar tipos de pedido por su descripción
+    // Optional<TipoPedidoEntity> findByDescripcionTipo(String descripcion);
 }
