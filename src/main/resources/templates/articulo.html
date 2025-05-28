@@ -45,22 +45,18 @@
 
                     <div class="article-details-grid mb-4">
                         <strong>ID:</strong> <span th:text="${articuloEntity?.id}">ID Articulo</span>
-                        <strong>Categoría:</strong> <span th:text="${articuloEntity?.seccion?.categoriaSeccion}">Sección del Artículo</span>
+                        <strong>Categoría:</strong> <span th:text="${articuloEntity?.seccionEntity?.categoriaSeccion}">Sección del Artículo</span>
                         <strong>Color:</strong> <span th:text="${articuloEntity?.color}">Color</span>
+                        <th:block th:if="${articuloEntity?.talla != null and articuloEntity?.talla != ''}">
+                            <strong>Talla:</strong> <span th:text="${articuloEntity?.talla}">Talla</span>
+                        </th:block>
                         <strong>Precio:</strong> <span th:text="${articuloEntity?.precio} + ' €'">Precio</span>
+                        <th:block th:if="${articuloEntity?.stock != null}">
+                            <strong>Stock:</strong> <span th:text="${articuloEntity?.stock}">Stock</span>
+                        </th:block>
                     </div>
 
                     <div class="size-selection-area">
-                        <label for="selectTalla" class="form-label mb-0">Talla:</label>
-                        <select class="form-select form-select-sm" id="selectTalla">
-                            <option value="">selecciona la talla</option>
-                            <option th:each="tallaDisponible : ${tallasDisponibles}" th:value="${tallaDisponible}"
-                                    th:text="${tallaDisponible}"></option>
-                            <option th:if="${articuloEntity?.talla}" th:value="${articuloEntity?.talla}"
-                                    th:text="${articuloEntity?.talla}" selected></option>
-
-                        </select>
-
                         <button class="btn btn-primary mt-2">pedir reposicion</button>
                     </div>
                 </div>

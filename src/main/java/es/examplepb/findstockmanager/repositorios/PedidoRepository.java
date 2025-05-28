@@ -1,6 +1,7 @@
 package es.examplepb.findstockmanager.repositorios;
 
 import es.examplepb.findstockmanager.entidades.PedidoEntity;
+import org.springframework.data.jpa.repository.EntityGraph; // Import this!
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,34 +11,33 @@ import java.util.Optional;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<PedidoEntity, Integer> {
-    // Buscar Pedidos por FechaSolicitud exacta
+
+    // THIS IS CRUCIAL FOR LOADING RELATED ENTITIES
+    @EntityGraph(attributePaths = {"tipo", "estado", "origenTiendaEntity", "destinoTiendaEntity", "origenAlmacenEntity", "destinoAlmacenEntity"})
+    Optional<PedidoEntity> findById(Integer id);
+
+    // Your other methods (no EntityGraph needed on these unless you're loading for a specific view):
     List<PedidoEntity> findByFechaSolicitud(LocalDate fechaSolicitud);
 
-    // Buscar Pedidos donde la descripción del estado (a través de la relación 'estado') está en una lista de strings
     List<PedidoEntity> findByEstado_DescripcionEstadoIn(List<String> descripcionEstados);
 
-    // Buscar Pedidos donde la descripción del estado está en una lista Y la FechaSolicitud coincide exactamente
     List<PedidoEntity> findByEstado_DescripcionEstadoInAndFechaSolicitud(List<String> descripcionEstados, LocalDate fechaSolicitud);
 
-    // --- Nuevos métodos para filtrar por destino ---
-    List<PedidoEntity> findByDestinoTiendaEntityIsNotNull(); // Pedidos con destino a tienda (destinoAlmacen será null por cómo insertas)
+    List<PedidoEntity> findByDestinoTiendaEntityIsNotNull();
 
-    List<PedidoEntity> findByDestinoAlmacenEntityIsNotNull(); // Pedidos con destino a almacén (destinoTienda será null)
+    List<PedidoEntity> findByDestinoAlmacenEntityIsNotNull();
 
-    // --- Nuevos métodos para combinaciones con Destino = Tienda ---
     List<PedidoEntity> findByEstado_DescripcionEstadoInAndDestinoTiendaEntityIsNotNull(List<String> descripcionEstados);
 
     List<PedidoEntity> findByFechaSolicitudAndDestinoTiendaEntityIsNotNull(LocalDate fechaSolicitud);
 
     List<PedidoEntity> findByEstado_DescripcionEstadoInAndFechaSolicitudAndDestinoTiendaEntityIsNotNull(List<String> descripcionEstados, LocalDate fechaSolicitud);
 
-    // --- Nuevos métodos para combinaciones con Destino = Almacen ---
     List<PedidoEntity> findByEstado_DescripcionEstadoInAndDestinoAlmacenEntityIsNotNull(List<String> descripcionEstados);
 
     List<PedidoEntity> findByFechaSolicitudAndDestinoAlmacenEntityIsNotNull(LocalDate fechaSolicitud);
 
     List<PedidoEntity> findByEstado_DescripcionEstadoInAndFechaSolicitudAndDestinoAlmacenEntityIsNotNull(List<String> descripcionEstados, LocalDate fechaSolicitud);
 
-    // Métodos para las tareas programadas
-    Optional<PedidoEntity> findTopByOrderByFechaSolicitudDesc(); // Para obtener el último pedido si lo necesitas
+    Optional<PedidoEntity> findTopByOrderByFechaSolicitudDesc();
 }

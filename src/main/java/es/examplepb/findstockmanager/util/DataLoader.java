@@ -77,19 +77,19 @@ public class DataLoader implements CommandLineRunner {
         // 6. Artículos (dependen de secciones)
         createEssentialArticulos(pantalonesSeccion, camisetasSeccion);
 
-        // 7. Estados de Pedido (IDs auto-generados)
+        // 7. Estados de Pedido
         EstadoPedidoEntity pendienteEstado = createEstadoPedidoIfNotFound("Pendiente");
         EstadoPedidoEntity enTramiteEstado = createEstadoPedidoIfNotFound("En tramite");
         EstadoPedidoEntity completadoEstado = createEstadoPedidoIfNotFound("Completado");
 
-        // 8. Tipos de Pedido (IDs auto-generados)
-        TipoPedidoEntity tiendaAlmacenTipo = createTipoPedidoIfNotFound("tienda-almacen");
-        TipoPedidoEntity almacenTiendaTipo = createTipoPedidoIfNotFound("almacen-tienda");
-        TipoPedidoEntity reposicionStockAlmacenTipo = createTipoPedidoIfNotFound("reposicion stock almacen");
+        // 8. Tipos de Pedido (Solo los 2 escenarios clave)
+        TipoPedidoEntity pedidoDeTiendaTipo = createTipoPedidoIfNotFound("pedido-de-tienda"); // Para cualquier pedido que involucre al menos una tienda
+        TipoPedidoEntity reposicionStockAlmacenTipo = createTipoPedidoIfNotFound("reposicion-stock-almacen"); // Para pedidos solo entre almacenes
 
         // 9. Pedidos y Pedido_Articulo (IDs de Pedido auto-generados)
         createPedidosAndPedidoArticulosIfNotFound(
-                tiendaAlmacenTipo, almacenTiendaTipo, reposicionStockAlmacenTipo,
+                pedidoDeTiendaTipo,
+                reposicionStockAlmacenTipo,
                 pendienteEstado, enTramiteEstado, completadoEstado,
                 tiendaA, almacenPrincipal
         );
@@ -107,7 +107,6 @@ public class DataLoader implements CommandLineRunner {
     private SeccionEntity createSeccionIfNotFound(String categoriaSeccion) {
         return seccionRepository.findByCategoriaSeccion(categoriaSeccion).orElseGet(() -> {
             log.info("Creando sección: {}", categoriaSeccion);
-            // El ID se auto-genera, no lo pasamos en el constructor
             return seccionRepository.save(new SeccionEntity(null, categoriaSeccion));
         });
     }
@@ -126,7 +125,6 @@ public class DataLoader implements CommandLineRunner {
         });
     }
 
-    // Usamos el builder para UsuarioEntity ya que el ID es auto-generado
     private UsuarioEntity createSystemUserIfNotFound(RolEntity systemRol, AlmacenEntity almacen) {
         return usuarioRepository.findByEmail(Constants.SYSTEM_USER_EMAIL).orElseGet(() -> {
             log.info("Creando usuario del sistema...");
@@ -144,7 +142,6 @@ public class DataLoader implements CommandLineRunner {
         });
     }
 
-    // Usamos el builder para UsuarioEntity ya que el ID es auto-generado
     private UsuarioEntity createUsuarioIfNotFound(RolEntity rol, AlmacenEntity almacen, String nombre, String apellido, String nif, String email, String fotografia, String rawPassword) {
         return usuarioRepository.findByEmail(email).orElseGet(() -> {
             log.info("Creando usuario: {}", email);
@@ -162,7 +159,6 @@ public class DataLoader implements CommandLineRunner {
         });
     }
 
-    // Modificado: Ahora busca por nombre y crea sin ID fijo (pasando null)
     private AlmacenEntity createDefaultAlmacenIfNotFound(String nombreAlmacen, String direccion, SeccionEntity seccion) {
         return almacenRepository.findByNombreAlmacen(nombreAlmacen).orElseGet(() -> {
             log.info("Creando almacén por defecto '{}' (ID auto-generado)...", nombreAlmacen);
@@ -173,7 +169,6 @@ public class DataLoader implements CommandLineRunner {
         });
     }
 
-    // Modificado: Ahora busca por nombre y crea sin ID fijo (pasando null)
     private TiendaEntity createDefaultTiendaIfNotFound(String nombreTienda, String direccion) {
         return tiendaRepository.findByNombreTienda(nombreTienda).orElseGet(() -> {
             log.info("Creando tienda por defecto '{}' (ID auto-generado)...", nombreTienda);
@@ -187,7 +182,7 @@ public class DataLoader implements CommandLineRunner {
     private void createEssentialArticulos(SeccionEntity pantalonesSeccion, SeccionEntity camisetasSeccion) {
         log.info("Asegurando que los artículos esenciales existan o creándolos...");
 
-        // Artículos de Camisetas
+        // Artículos de Camisetas (resto del código igual)
         createArticuloIfNotFound("CAMT001001", camisetasSeccion, "Blanco", 19.99, "XXS", "Camiseta", "camiseta_blanca.png", 100);
         createArticuloIfNotFound("CAMT001002", camisetasSeccion, "Blanco", 19.99, "XS", "Camiseta", "camiseta_blanca.png", 90);
         createArticuloIfNotFound("CAMT001003", camisetasSeccion, "Blanco", 19.99, "S", "Camiseta", "camiseta_blanca.png", 90);
@@ -223,7 +218,7 @@ public class DataLoader implements CommandLineRunner {
         createArticuloIfNotFound("CAMT005005", camisetasSeccion, "Rojo", 19.99, "L", "Camiseta", "camiseta_roja.png", 60);
         createArticuloIfNotFound("CAMT005006", camisetasSeccion, "Rojo", 19.99, "XL", "Camiseta", "camiseta_roja.png", 20);
 
-        // Artículos de Pantalones
+        // Artículos de Pantalones (resto del código igual)
         createArticuloIfNotFound("PANT002001", pantalonesSeccion, "Azul", 49.99, "XXS", "Pantalón", "pantalon_azul.png", 40);
         createArticuloIfNotFound("PANT002002", pantalonesSeccion, "Azul", 49.99, "XS", "Pantalón", "pantalon_azul.png", 45);
         createArticuloIfNotFound("PANT002003", pantalonesSeccion, "Azul", 49.99, "S", "Pantalón", "pantalon_azul.png", 50);
@@ -256,19 +251,23 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void createPedidosAndPedidoArticulosIfNotFound(
-            TipoPedidoEntity tiendaAlmacenTipo, TipoPedidoEntity almacenTiendaTipo, TipoPedidoEntity reposicionStockAlmacenTipo,
+            TipoPedidoEntity pedidoDeTiendaTipo, // Tipo para pedidos que involucren tiendas
+            TipoPedidoEntity reposicionStockAlmacenTipo, // Tipo para pedidos solo entre almacenes
             EstadoPedidoEntity pendienteEstado, EstadoPedidoEntity enTramiteEstado, EstadoPedidoEntity completadoEstado,
             TiendaEntity tiendaA, AlmacenEntity almacenPrincipal) {
 
         if (pedidoRepository.count() == 0) {
-            log.info("Creando Pedido 1 (Ejemplo: Tienda a Tienda, Completado, Fecha Recepción asignada)...");
+            log.info("Creando Pedido 1 (Ejemplo: Tienda a Tienda, Completado). Tipo de Pedido: DE TIENDA.");
             PedidoEntity pedido1 = new PedidoEntity();
-            pedido1.setTipo(tiendaAlmacenTipo);
+            pedido1.setTipo(pedidoDeTiendaTipo);
             pedido1.setEstado(completadoEstado);
+
+            // Si es un pedido que involucra tiendas, los campos de ALMACEN deben ser NULL.
             pedido1.setOrigenTiendaEntity(tiendaA);
-            pedido1.setDestinoTiendaEntity(tiendaA); // Esto es redundante si Origen y Destino son la misma tienda
+            pedido1.setDestinoTiendaEntity(tiendaA);
             pedido1.setOrigenAlmacenEntity(null);
             pedido1.setDestinoAlmacenEntity(null);
+
             pedido1.setFechaSolicitud(LocalDate.of(2023, 1, 1));
             pedido1.setFechaRecepcion(LocalDate.of(2023, 1, 1));
             pedido1.setFechaEnvio(null);
@@ -289,14 +288,17 @@ public class DataLoader implements CommandLineRunner {
             log.info("Pedido 1 y sus líneas creados con ID: {}", savedPedido1.getId());
 
 
-            log.info("Creando Pedido 2 (Ejemplo: Reposición Stock, En Trámite, Fecha Recepción asignada)...");
+            log.info("Creando Pedido 2 (Ejemplo: Reposición Stock - Almacén a Almacén, En Tramite). Tipo de Pedido: REPOSICION STOCK.");
             PedidoEntity pedido2 = new PedidoEntity();
             pedido2.setTipo(reposicionStockAlmacenTipo);
             pedido2.setEstado(enTramiteEstado);
+
+            // Si es un pedido de reposición de stock (solo almacenes), los campos de TIENDA deben ser NULL.
             pedido2.setOrigenTiendaEntity(null);
             pedido2.setDestinoTiendaEntity(null);
             pedido2.setOrigenAlmacenEntity(almacenPrincipal);
             pedido2.setDestinoAlmacenEntity(almacenPrincipal);
+
             pedido2.setFechaSolicitud(LocalDate.of(2023, 2, 1));
             pedido2.setFechaRecepcion(LocalDate.of(2023, 2, 1));
             pedido2.setFechaEnvio(LocalDate.of(2023, 2, 3));
@@ -314,28 +316,6 @@ public class DataLoader implements CommandLineRunner {
             pedidoArticuloRepository.save(pa2_2);
 
             log.info("Pedido 2 y sus líneas creados con ID: {}", savedPedido2.getId());
-
-            log.info("Creando Pedido 3 (Ejemplo: Almacén a Tienda, Pendiente, Fecha Recepción nula)...");
-            PedidoEntity pedido3 = new PedidoEntity();
-            pedido3.setTipo(almacenTiendaTipo);
-            pedido3.setEstado(pendienteEstado);
-            pedido3.setOrigenTiendaEntity(null);
-            pedido3.setDestinoTiendaEntity(tiendaA);
-            pedido3.setOrigenAlmacenEntity(almacenPrincipal);
-            pedido3.setDestinoAlmacenEntity(null);
-            pedido3.setFechaSolicitud(LocalDate.of(2024, 1, 10));
-            pedido3.setFechaRecepcion(null);
-            pedido3.setFechaEnvio(null);
-
-            PedidoEntity savedPedido3 = pedidoRepository.save(pedido3);
-
-            ArticuloEntity camt004001 = articuloRepository.findById("CAMT004001").orElseThrow(() -> new IllegalStateException("Artículo CAMT004001 no encontrado para Pedido 3"));
-            PedidoArticuloIdEntity paId3 = new PedidoArticuloIdEntity(camt004001.getId(), savedPedido3.getId());
-            PedidoArticuloEntity pa3 = new PedidoArticuloEntity(paId3, savedPedido3, camt004001, 8, 159.92, false);
-            pedidoArticuloRepository.save(pa3);
-
-            log.info("Pedido 3 y sus líneas creados con ID: {}", savedPedido3.getId());
-
         }
     }
 }

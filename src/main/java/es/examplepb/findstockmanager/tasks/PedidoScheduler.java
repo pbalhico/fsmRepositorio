@@ -131,6 +131,7 @@ public class PedidoScheduler {
             lineaPedido.setArticuloEntity(articulo);
             lineaPedido.setCantidadPedidoArticulo(cantidadNecesaria);
             lineaPedido.setImporteTotal(articulo.getPrecio() * cantidadNecesaria);
+            lineaPedido.setRecibido(false); // Inicialmente no recibido
 
             pedidoArticuloRepository.save(lineaPedido);
             log.info("Línea de pedido de reposición creada para artículo {} con cantidad {}", articulo.getNombreArticulo(), cantidadNecesaria);
@@ -240,6 +241,7 @@ public class PedidoScheduler {
             lineaPedido.setArticuloEntity(articulo);
             lineaPedido.setCantidadPedidoArticulo(cantidad);
             lineaPedido.setImporteTotal(articulo.getPrecio() * cantidad);
+            lineaPedido.setRecibido(false); // Inicialmente no recibido
 
             pedidoArticuloRepository.save(lineaPedido);
             log.info("Línea de pedido a tienda creada para artículo {} con cantidad {}", articulo.getNombreArticulo(), cantidad);

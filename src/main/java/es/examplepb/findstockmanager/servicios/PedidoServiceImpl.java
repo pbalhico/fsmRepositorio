@@ -1,7 +1,6 @@
 package es.examplepb.findstockmanager.servicios;
 
 import es.examplepb.findstockmanager.entidades.*;
-import es.examplepb.findstockmanager.entidades.PedidoArticuloIdEntity;
 import es.examplepb.findstockmanager.repositorios.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -36,7 +35,6 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidoRepository.findById(id);
     }
 
-    // --- MÉTODO findByIdAndSetFechaRecepcion MODIFICADO ---
     @Override
     @Transactional
     public Optional<PedidoEntity> findByIdAndSetFechaRecepcion(Integer id) {
@@ -44,18 +42,14 @@ public class PedidoServiceImpl implements PedidoService {
         if (pedidoOptional.isPresent()) {
             PedidoEntity pedido = pedidoOptional.get();
 
-            // Solo establece fechaRecepcion si aún no está establecida
             if (pedido.getFechaRecepcion() == null) {
                 pedido.setFechaRecepcion(LocalDate.now());
                 log.info("Pedido con ID {} abierto por primera vez. Fecha de recepción establecida.", id);
             }
 
-            // Cambiar estado a "En tramite" si actualmente es "Pendiente"
-            // Asumiendo que "En tramite" es el estado con ID 2 o el nombre exacto que hemos definido
-            // (que ahora sabemos es "En tramite" sin tilde).
             EstadoPedidoEntity estadoActual = pedido.getEstado();
             if (estadoActual != null && "Pendiente".equals(estadoActual.getDescripcionEstado())) {
-                Optional<EstadoPedidoEntity> enTramiteEstadoOptional = estadoPedidoRepository.findByDescripcionEstado("En tramite"); // Usar "En tramite" sin tilde
+                Optional<EstadoPedidoEntity> enTramiteEstadoOptional = estadoPedidoRepository.findByDescripcionEstado("En tramite");
                 if (enTramiteEstadoOptional.isPresent()) {
                     pedido.setEstado(enTramiteEstadoOptional.get());
                     log.info("Estado del pedido con ID {} cambiado a 'En tramite'.", id);
@@ -63,13 +57,10 @@ public class PedidoServiceImpl implements PedidoService {
                     log.error("Error: Estado 'En tramite' no encontrado en la base de datos de estados de pedido. Asegúrate de que existe este registro.");
                 }
             }
-
-            // Guardar los cambios (fechaRecepcion y/o estado)
             pedidoRepository.save(pedido);
         }
         return pedidoOptional;
     }
-    // --------------------------------------------------------
 
     @Override
     public List<PedidoEntity> findAllFiltered(List<String> estados, LocalDate fechaSolicitud) {
@@ -136,10 +127,11 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    @Transactional(readOnly = true) // Añadir esto para métodos de solo lectura si no lo tienes ya
     public List<PedidoArticuloEntity> findArticulosByPedidoId(Integer pedidoId) {
         log.info("Buscando artículos para el pedido con ID: {}", pedidoId);
-        Optional<PedidoEntity> pedidoOptional = pedidoRepository.findById(pedidoId);
-        return pedidoOptional.map(PedidoEntity::getPedidoArticulos).orElse(Collections.emptyList());
+        // ¡CAMBIO CLAVE AQUÍ! Llama directamente al PedidoArticuloRepository con EntityGraph
+        return pedidoArticuloRepository.findById_PedidoId(pedidoId);
     }
 
     @Override
@@ -147,17 +139,14 @@ public class PedidoServiceImpl implements PedidoService {
     public PedidoEntity save(PedidoEntity pedidoEntity) {
         log.info("Guardando o actualizando pedido con ID: {}", pedidoEntity.getId());
 
-        // Solo establecer fechaSolicitud al crear un nuevo pedido
         if (pedidoEntity.getId() == null) {
             log.info("Estableciendo fechaSolicitud para un nuevo pedido.");
             pedidoEntity.setFechaSolicitud(LocalDate.now());
-            // El estado inicial "Pendiente" también se debería asignar aquí si no está ya
             if (pedidoEntity.getEstado() == null) {
                 estadoPedidoRepository.findByDescripcionEstado("Pendiente")
                         .ifPresent(pedidoEntity::setEstado);
             }
         }
-        // NOTA: fechaRecepcion NO se establece aquí; se establece en findByIdAndSetFechaRecepcion().
 
         return pedidoRepository.save(pedidoEntity);
     }
@@ -171,7 +160,6 @@ public class PedidoServiceImpl implements PedidoService {
         if (pedidoOptional.isPresent()) {
             PedidoEntity pedido = pedidoOptional.get();
 
-            // Aquí solo comprobamos "Completado" porque "Archivado" ya no existe.
             if ("Completado".equals(pedido.getEstado().getDescripcionEstado())) {
                 log.warn("El pedido con ID {} ya está en estado 'Completado'. No se puede finalizar de nuevo.", pedidoId);
                 return false;
@@ -181,7 +169,6 @@ public class PedidoServiceImpl implements PedidoService {
 
             if (estadoCompletadoOptional.isPresent()) {
                 pedido.setEstado(estadoCompletadoOptional.get());
-                // *** Aquí se establece la fecha_envio al concluir el pedido ***
                 pedido.setFechaEnvio(LocalDate.now());
                 log.info("Estableciendo fechaEnvio para el pedido {} al concluirlo.", pedido.getId());
 
@@ -209,7 +196,6 @@ public class PedidoServiceImpl implements PedidoService {
         PedidoEntity pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + pedidoId + ". No se puede añadir artículo a un pedido inexistente."));
 
-        // Asegúrate de que "Archivado" no esté aquí si ya lo eliminaste.
         if ("Completado".equals(pedido.getEstado().getDescripcionEstado())) {
             throw new IllegalStateException("No se pueden añadir artículos a un pedido que ya está " + pedido.getEstado().getDescripcionEstado() + ".");
         }
@@ -245,8 +231,6 @@ public class PedidoServiceImpl implements PedidoService {
             pedido.addPedidoArticulo(nuevoPedidoArticulo);
         }
 
-        // Si el pedido está en "Pendiente" y se le añade un artículo, pasa a "En tramite"
-        // Usa "En tramite" sin tilde
         if (pedido.getEstado().getDescripcionEstado().equals("Pendiente") && !pedido.getPedidoArticulos().isEmpty()) {
             EstadoPedidoEntity enTramiteEstado = estadoPedidoRepository.findByDescripcionEstado("En tramite")
                     .orElseThrow(() -> new IllegalStateException("Estado 'En tramite' no encontrado. Asegúrate de que existe."));

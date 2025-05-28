@@ -40,9 +40,9 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="filterByName" class="form-label mb-0">Nombre:</label>
-                        <input type="text" class="form-control form-control-sm filter-input" id="filterByName"
-                               name="nombre" th:value="${selectedNombre}">
+                        <label for="filterById" class="form-label mb-0">ID Artículo:</label>
+                        <input type="text" class="form-control form-control-sm filter-input" id="filterById"
+                               name="idArticulo" th:value="${selectedIdArticulo}">
                     </div>
                     <div class="col-md-4">
                         <label for="sortByStock" class="form-label mb-0">Ordenar por Stock:</label>
@@ -72,10 +72,7 @@
                 <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Artículo</th>
                     <th scope="col">Sección</th>
-                    <th scope="col">Color</th>
-                    <th scope="col">Talla</th>
                     <th scope="col">Precio</th>
                     <th scope="col">Stock</th>
                     <th scope="col"></th>
@@ -84,10 +81,7 @@
                 <tbody>
                 <tr th:each="articuloEntity : ${articulos}">
                     <td th:text="${articuloEntity.id}">ID Articulo</td>
-                    <td th:text="${articuloEntity.nombreArticulo}">Nombre Articulo</td>
-                    <td th:text="${articuloEntity.seccion?.categoriaSeccion}">Seccion</td>
-                    <td th:text="${articuloEntity.color}">Color</td>
-                    <td th:text="${articuloEntity.talla}">Talla</td>
+                    <td th:text="${articuloEntity.seccionEntity?.categoriaSeccion}">Seccion</td>
                     <td th:text="${articuloEntity.precio}">Precio</td>
                     <td th:text="${articuloEntity.stock}">Stock</td>
                     <td>

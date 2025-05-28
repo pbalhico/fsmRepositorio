@@ -20,83 +20,65 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Optional; // Importa Optional si findByEmail devuelve Optional
 
-@RequiredArgsConstructor // Lombok generará el constructor con los campos 'final' para inyección de dependencias
+@RequiredArgsConstructor
 @Controller
 @Slf4j // Lombok para logging
 @RequestMapping("/articulos") // Mapeo base para las URLs de artículos
 public class ArticuloController {
 
     private final ArticuloService articuloService;
-    private final UsuarioService usuarioService; // Para obtener el usuario autenticado
-    private final SeccionService seccionService; // Para obtener la lista de secciones para el filtro
+    private final UsuarioService usuarioService;
+    private final SeccionService seccionService;
 
     @GetMapping("/lista")
     public String listarArticulos(
             @RequestParam(value = "seccionId", required = false) String seccionId,
-            @RequestParam(value = "nombre", required = false) String nombre,
+            @RequestParam(value = "idArticulo", required = false) String idArticulo,
             @RequestParam(value = "sortByStock", required = false) String sortByStock,
             Model model) {
 
-        log.info("Accediendo a la lista de artículos. Filtros: seccionId={}, nombre={}, sortByStock={}", seccionId, nombre, sortByStock);
+        log.info("Accediendo a la lista de artículos. Filtros: seccionId={}, idArticulo={}, sortByStock={}", seccionId, idArticulo, sortByStock);
 
-        // --- Código para obtener el usuario autenticado y añadirlo al modelo ---
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName(); // Obtiene el username (que es el email)
 
-        // Busca la entidad Usuario completa usando el email
-        // Asumiendo que usuarioService.findByEmail devuelve Optional<Usuario>
         Optional<UsuarioEntity> usuarioAutenticadoOptional = usuarioService.findByEmail(username);
 
-        // Si el usuario se encuentra, lo añadimos al modelo
         usuarioAutenticadoOptional.ifPresent(usuario -> model.addAttribute("usuarioAutenticado", usuario));
-        // --- Fin del código para obtener el usuario ---
 
+        List<ArticuloEntity> listaDeArticuloEntities = articuloService.findAllFilteredAndSorted(seccionId, idArticulo, sortByStock);
 
-        // Llama al servicio para obtener la lista de artículos filtrada y ordenada
-        // Necesitarás implementar este método en tu ArticuloService
-        List<ArticuloEntity> listaDeArticuloEntities = articuloService.findAllFilteredAndSorted(seccionId, nombre, sortByStock);
+        List<SeccionEntity> listaDeSecciones = seccionService.findAll();
 
-        // Obtiene la lista de secciones para poblar el dropdown de filtro
-        // Necesitarás implementar este método en tu SeccionService
-        List<SeccionEntity> listaDeSecciones = seccionService.findAll(); // Asumiendo que SeccionService tiene findAll()
-
-
-        // Añade los datos al modelo para que la plantilla los muestre
         model.addAttribute("articulos", listaDeArticuloEntities);
-        model.addAttribute("secciones", listaDeSecciones); // Añade la lista de secciones
-        model.addAttribute("selectedSeccionId", seccionId); // Para mantener el filtro de sección seleccionado
-        model.addAttribute("selectedNombre", nombre);       // Para mantener el filtro de nombre seleccionado
-        model.addAttribute("selectedSortByStock", sortByStock); // Para mantener la opción de ordenación seleccionada
+        model.addAttribute("secciones", listaDeSecciones);
+        model.addAttribute("selectedSeccionId", seccionId);
+        model.addAttribute("selectedIdArticulo", idArticulo);
+        model.addAttribute("selectedSortByStock", sortByStock);
 
-
-        // Devuelve el nombre de la plantilla Thymeleaf
-        return "listaArticulos"; // Asegúrate de que este es el nombre correcto de tu archivo HTML
+        return "listaArticulos";
     }
 
     @GetMapping("/{id}")
     public String verDetalleArticulo(@PathVariable String id, Model model) {
         log.info("Accediendo a detalles del artículo con ID: {}", id);
 
-        // --- Código para obtener el usuario autenticado y añadirlo al modelo ---
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<UsuarioEntity> usuarioAutenticadoOptional = usuarioService.findByEmail(username);
         usuarioAutenticadoOptional.ifPresent(usuario -> model.addAttribute("usuarioAutenticado", usuario));
-        // --- Fin del código ---
 
-        // Llama al servicio para obtener el artículo por su ID
-        // Necesitarás añadir un método findById en tu ArticuloService e implementarlo
-        ArticuloEntity articuloEntity = articuloService.findById(id); // Asume que tienes este método
+        ArticuloEntity articuloEntity = articuloService.findById(id);
 
         if (articuloEntity != null) {
-            model.addAttribute("articulo", articuloEntity);
-            // Retorna el nombre de la plantilla para mostrar los detalles del artículo
+            model.addAttribute("articuloEntity", articuloEntity);
+            List<String> tallasDisponibles = List.of("XS", "S", "M", "L", "XL", "XXL"); // O cargarlas dinámicamente
+            model.addAttribute("tallasDisponibles", tallasDisponibles);
             return "articulo";
         } else {
             log.warn("Artículo con ID {} no encontrado", id);
-            // Manejar caso donde el artículo no existe (ej: mostrar mensaje de error o redirigir)
             model.addAttribute("errorMessage", "Artículo no encontrado.");
-            return "error"; // Asume que tienes una plantilla de error
+            return "error";
         }
     }
 }

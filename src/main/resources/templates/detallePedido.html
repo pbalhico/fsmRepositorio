@@ -46,6 +46,20 @@
             <p><strong>Fecha de Solicitud:</strong> <span
                     th:text="${pedidoEntity?.fechaSolicitud}">Fecha de Solicitud</span>
             </p>
+            <p><strong>Tipo:</strong> <span th:text="${pedidoEntity?.tipo?.descripcionTipo}"></span></p>
+            <p><strong>Estado:</strong> <span th:text="${pedidoEntity?.estado?.descripcionEstado}"></span></p>
+            <p th:if="${pedidoEntity?.origenTiendaEntity != null}"><strong>Origen Tienda:</strong> <span
+                    th:text="${pedidoEntity?.origenTiendaEntity?.nombreTienda}"></span></p>
+            <p th:if="${pedidoEntity?.destinoTiendaEntity != null}"><strong>Destino Tienda:</strong> <span
+                    th:text="${pedidoEntity?.destinoTiendaEntity?.nombreTienda}"></span></p>
+            <p th:if="${pedidoEntity?.origenAlmacenEntity != null}"><strong>Origen Almacén:</strong> <span
+                    th:text="${pedidoEntity?.origenAlmacenEntity?.nombreAlmacen}"></span></p>
+            <p th:if="${pedidoEntity?.destinoAlmacenEntity != null}"><strong>Destino Almacén:</strong> <span
+                    th:text="${pedidoEntity?.destinoAlmacenEntity?.nombreAlmacen}"></span></p>
+            <p th:if="${pedidoEntity?.fechaRecepcion != null}"><strong>Fecha Recepción:</strong> <span
+                    th:text="${#temporals.format(pedidoEntity?.fechaRecepcion, 'dd-MM-yyyy')}"></span></p>
+            <p th:if="${pedidoEntity?.fechaEnvio != null}"><strong>Fecha Envío:</strong> <span
+                    th:text="${#temporals.format(pedidoEntity?.fechaEnvio, 'dd-MM-yyyy')}"></span></p>
         </div>
 
         <input type="hidden" id="returnUrlInput" th:value="${returnToListUrl}"/>
@@ -59,17 +73,24 @@
             <table class="table table-hover order-table">
                 <thead>
                 <tr>
-                    <th scope="col">Artículo</th>
+                    <th scope="col">ID Artículo</th>
+                    <th scope="col">Nombre Artículo</th>
                     <th scope="col">Unidades</th>
                     <th scope="col">Importe</th>
+                    <th scope="col">Recibido</th>
                     <th scope="col">Acción</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item : ${articulosPedido}" th:data-item-id="${item.articuloEntity?.id}">
+                    <td>
+                        <a th:href="@{/articulos/{id}(id=${item.articuloEntity?.id})}"
+                           th:text="${item.articuloEntity?.id}"></a>
+                    </td>
                     <td th:text="${item.articuloEntity?.nombreArticulo}">Nombre Articulo</td>
                     <td th:text="${item.cantidadPedidoArticulo}">Cantidad</td>
                     <td th:text="${#numbers.formatDecimal(item.importeTotal, 1, 2)} + '€'">Importe</td>
+                    <td th:text="${item.recibido ? 'Sí' : 'No'}">Recibido</td>
                     <td>
                         <button class="btn btn-sm btn-success add-item-btn me-2"
                                 th:data-item-id="${item.articuloEntity?.id}">
@@ -79,15 +100,16 @@
                     </td>
                 </tr>
                 <tr th:if="${articulosPedido == null or articulosPedido.empty}">
-                    <td colspan="4" class="text-center">No se encontraron artículos para este pedido.</td>
+                    <td colspan="6" class="text-center">No se encontraron artículos para este pedido.</td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="2" class="text-end"><strong>IMPORTE TOTAL PEDIDO:</strong></td>
+                    <td colspan="3" class="text-end"><strong>IMPORTE TOTAL PEDIDO:</strong></td>
                     <td th:text="${#numbers.formatDecimal(#aggregates.sum(articulosPedido.![importeTotal]), 1, 2)} + '€'">
                         XXX€
                     </td>
+                    <td></td>
                     <td></td>
                 </tr>
                 </tfoot>
