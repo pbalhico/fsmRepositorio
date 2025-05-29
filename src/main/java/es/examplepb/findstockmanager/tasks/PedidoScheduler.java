@@ -67,7 +67,7 @@ public class PedidoScheduler {
             log.error("No se encontró el tipo de pedido '{}'. No se pueden generar pedidos de reposición.", Constants.TIPO_REPOSICION_STOCK_ALMACEN);
             return;
         }
-        TipoPedidoEntity tipoReposicion = tipoReposicionOpt.get();
+        TipoPedidoEntity tipoReposicion = tipoReposicionOpt.get(); // Necesario para setear el tipo en el nuevo pedido
 
         // Obtener el estado "Pendiente"
         Optional<EstadoPedidoEntity> estadoPendienteOpt = estadoPedidoRepository.findByDescripcionEstado(Constants.ESTADO_PENDIENTE);
@@ -75,18 +75,9 @@ public class PedidoScheduler {
             log.error("No se encontró el estado de pedido '{}'. No se pueden generar pedidos de reposición.", Constants.ESTADO_PENDIENTE);
             return;
         }
-        EstadoPedidoEntity estadoPendiente = estadoPendienteOpt.get();
-
-        // Obtener el usuario del sistema (se mantiene la búsqueda si se necesita para otros fines, pero no se asigna al Pedido)
-        Optional<UsuarioEntity> usuarioSistemaOpt = usuarioRepository.findByEmail(Constants.SYSTEM_USER_EMAIL);
-        if (usuarioSistemaOpt.isEmpty()) {
-            log.error("No se encontró el usuario del sistema con email '{}'. No se pueden generar pedidos de reposición.", Constants.SYSTEM_USER_EMAIL);
-            return;
-        }
-        UsuarioEntity usuarioSistema = usuarioSistemaOpt.get(); // Se obtiene, pero no se usará para setear en PedidoEntity
+        EstadoPedidoEntity estadoPendiente = estadoPendienteOpt.get(); // Necesario para setear el estado en el nuevo pedido
 
         // Obtener el almacén de destino (el único almacén existente)
-        // CORREGIDO: Buscar por nombre en lugar de ID fijo
         Optional<AlmacenEntity> almacenOpt = almacenRepository.findByNombreAlmacen("Almacén Principal");
         if (almacenOpt.isEmpty()) {
             log.error("No se encontró el almacén con nombre 'Almacén Principal'. No se pueden generar pedidos de reposición.");
@@ -94,28 +85,38 @@ public class PedidoScheduler {
         }
         AlmacenEntity almacenDestino = almacenOpt.get();
 
+        // *******************************************************************************************
+        // CAMBIO AQUÍ: Usar la nueva consulta para filtrar artículos con pedidos activos
+        // *******************************************************************************************
+        List<ArticuloEntity> articulosParaReponer = articuloRepository.findArticulosParaReposicionSinPedidosActivos(
+                Constants.STOCK_MINIMO_REPOSICION,
+                Constants.TIPO_REPOSICION_STOCK_ALMACEN,
+                Constants.ESTADO_PENDIENTE,
+                Constants.ESTADO_ENTRAMITE
+        );
 
-        List<ArticuloEntity> articulosBajoStock = articuloRepository.findByStockLessThan(Constants.STOCK_MINIMO_REPOSICION);
-
-        if (articulosBajoStock.isEmpty()) {
-            log.info("No hay artículos con stock por debajo de {}. No se generaron pedidos de reposición.", Constants.STOCK_MINIMO_REPOSICION);
+        if (articulosParaReponer.isEmpty()) {
+            log.info("No hay artículos con stock por debajo de {} sin pedidos de reposición pendientes o en trámite. No se generaron pedidos.", Constants.STOCK_MINIMO_REPOSICION);
             return;
         }
 
-        log.info("Se encontraron {} artículos con stock bajo.", articulosBajoStock.size());
+        log.info("Se encontraron {} artículos que necesitan reposición y no tienen pedidos activos.", articulosParaReponer.size());
 
-        for (ArticuloEntity articulo : articulosBajoStock) {
+        for (ArticuloEntity articulo : articulosParaReponer) {
             int cantidadNecesaria = Constants.STOCK_MINIMO_REPOSICION - articulo.getStock();
+            if (cantidadNecesaria <= 0) { // Pequeña validación extra por si acaso
+                log.warn("Articulo {} ya no necesita reposición (stock {}) o la cantidad necesaria es 0. Saltando.", articulo.getNombreArticulo(), articulo.getStock());
+                continue;
+            }
 
             // Crear un nuevo pedido de reposición
             PedidoEntity nuevoPedido = new PedidoEntity();
-            nuevoPedido.setTipo(tipoReposicion);
-            nuevoPedido.setEstado(estadoPendiente);
+            nuevoPedido.setTipo(tipoReposicion); // Usar el tipo de reposicion encontrado
+            nuevoPedido.setEstado(estadoPendiente); // Usar el estado pendiente encontrado
             nuevoPedido.setOrigenTiendaEntity(null);
             nuevoPedido.setDestinoTiendaEntity(null);
-            nuevoPedido.setOrigenAlmacenEntity(almacenDestino); // Origen es el mismo almacén para reposición
-            nuevoPedido.setDestinoAlmacenEntity(almacenDestino); // Destino es el almacén
-            // ELIMINADO: nuevoPedido.setUsuarioEntity(usuarioSistema); // Esta línea ha sido eliminada
+            nuevoPedido.setOrigenAlmacenEntity(almacenDestino);
+            nuevoPedido.setDestinoAlmacenEntity(almacenDestino);
             nuevoPedido.setFechaSolicitud(LocalDate.now());
             nuevoPedido.setFechaRecepcion(null);
             nuevoPedido.setFechaEnvio(null);
@@ -131,7 +132,7 @@ public class PedidoScheduler {
             lineaPedido.setArticuloEntity(articulo);
             lineaPedido.setCantidadPedidoArticulo(cantidadNecesaria);
             lineaPedido.setImporteTotal(articulo.getPrecio() * cantidadNecesaria);
-            lineaPedido.setRecibido(false); // Inicialmente no recibido
+            lineaPedido.setRecibido(false);
 
             pedidoArticuloRepository.save(lineaPedido);
             log.info("Línea de pedido de reposición creada para artículo {} con cantidad {}", articulo.getNombreArticulo(), cantidadNecesaria);

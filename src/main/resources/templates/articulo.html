@@ -13,24 +13,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/listaTienda.css}">
-    <link rel="stylesheet" th:href="@{/css/articuloEntity.css}">
+    <link rel="stylesheet" th:href="@{/css/articulo.css}">
 </head>
 <body>
 
 <div th:replace="~{fragmentos/header :: headerFragment}"></div>
 
 <main class="main-content container-fluid">
-    <div class="container">
-
+    <div class="container article-detail-container">
         <div class="row mb-4">
-            <div class="col">
-                <h1 class="section-title" th:text="'Artículo: ' + ${articuloEntity?.id}">Artículo</h1>
+            <div class="col-12 text-center">
+                <h1 class="article-page-title" th:text="'Artículo: ' + ${articuloEntity?.id}">Artículo</h1>
             </div>
         </div>
 
-        <div class="article-layout-area p-3 mb-3">
+        <div class="article-card-wrapper p-3 mb-3">
             <div class="row">
-                <div class="col-md-5 text-center mb-3 mb-md-0">
+                <div class="col-md-5 text-center mb-3 mb-md-0 article-image-col">
                     <img th:if="${articuloEntity?.fotografiaArt != null and articuloEntity?.fotografiaArt != ''}"
                          th:src="@{'/images/' + ${articuloEntity.fotografiaArt}}"
                          alt="Fotografía del Artículo" class="img-fluid rounded article-photo">
@@ -40,31 +39,38 @@
                     </div>
                 </div>
 
-                <div class="col-md-7">
+                <div class="col-md-7 article-details-col">
                     <h2 class="article-name" th:text="${articuloEntity?.nombreArticulo}">NOMBRE</h2>
 
                     <div class="article-details-grid mb-4">
-                        <strong>ID:</strong> <span th:text="${articuloEntity?.id}">ID Articulo</span>
-                        <strong>Categoría:</strong> <span th:text="${articuloEntity?.seccionEntity?.categoriaSeccion}">Sección del Artículo</span>
-                        <strong>Color:</strong> <span th:text="${articuloEntity?.color}">Color</span>
+                        <div class="detail-item"><strong>ID:</strong> <span
+                                th:text="${articuloEntity?.id}">ID Articulo</span></div>
+                        <div class="detail-item"><strong>Categoría:</strong> <span
+                                th:text="${articuloEntity?.seccionEntity?.categoriaSeccion}">Sección del Artículo</span>
+                        </div>
+                        <div class="detail-item"><strong>Color:</strong> <span
+                                th:text="${articuloEntity?.color}">Color</span></div>
                         <th:block th:if="${articuloEntity?.talla != null and articuloEntity?.talla != ''}">
-                            <strong>Talla:</strong> <span th:text="${articuloEntity?.talla}">Talla</span>
+                            <div class="detail-item"><strong>Talla:</strong> <span th:text="${articuloEntity?.talla}">Talla</span>
+                            </div>
                         </th:block>
-                        <strong>Precio:</strong> <span th:text="${articuloEntity?.precio} + ' €'">Precio</span>
+                        <div class="detail-item price-item"><strong>Precio:</strong> <span
+                                th:text="${articuloEntity?.precio} + ' €'">Precio</span></div>
                         <th:block th:if="${articuloEntity?.stock != null}">
-                            <strong>Stock:</strong> <span th:text="${articuloEntity?.stock}">Stock</span>
+                            <div class="detail-item stock-item"><strong>Stock:</strong> <span
+                                    th:text="${articuloEntity?.stock}">Stock</span></div>
                         </th:block>
                     </div>
 
-                    <div class="size-selection-area">
-                        <button class="btn btn-primary mt-2">pedir reposicion</button>
+                    <div class="action-buttons-area mt-4 text-center text-md-start">
+                        <button class="btn btn-primary order-button">Pedir reposición</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="text-center mt-4">
-            <a th:href="@{/articulos/lista}" class="btn btn-secondary btn-lg me-2">Volver al Listado</a>
+        <div class="text-center mt-4 back-button-area">
+            <a th:href="@{/articulos/lista}" class="btn btn-secondary btn-lg return-button">Volver al Listado</a>
         </div>
 
     </div>

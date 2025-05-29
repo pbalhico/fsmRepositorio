@@ -83,8 +83,8 @@ public class DataLoader implements CommandLineRunner {
         EstadoPedidoEntity completadoEstado = createEstadoPedidoIfNotFound("Completado");
 
         // 8. Tipos de Pedido (Solo los 2 escenarios clave)
-        TipoPedidoEntity pedidoDeTiendaTipo = createTipoPedidoIfNotFound("pedido-de-tienda"); // Para cualquier pedido que involucre al menos una tienda
-        TipoPedidoEntity reposicionStockAlmacenTipo = createTipoPedidoIfNotFound("reposicion-stock-almacen"); // Para pedidos solo entre almacenes
+        TipoPedidoEntity pedidoDeTiendaTipo = createTipoPedidoIfNotFound(Constants.TIPO_ALMACEN_TIENDA);
+        TipoPedidoEntity reposicionStockAlmacenTipo = createTipoPedidoIfNotFound(Constants.TIPO_REPOSICION_STOCK_ALMACEN);
 
         // 9. Pedidos y Pedido_Articulo (IDs de Pedido auto-generados)
         createPedidosAndPedidoArticulosIfNotFound(

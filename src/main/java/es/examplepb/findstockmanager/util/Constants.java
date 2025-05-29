@@ -27,8 +27,8 @@ public final class Constants {
     public static final String ESTADO_ENTRAMITE = "En tramite";
 
     // Descripciones de tipos de pedido predefinidos (de data.sql)
-    public static final String TIPO_ALMACEN_TIENDA = "almacen-tienda";
-    public static final String TIPO_REPOSICION_STOCK_ALMACEN = "reposicion stock almacen";
+    public static final String TIPO_ALMACEN_TIENDA = "pedido-de-tienda";
+    public static final String TIPO_REPOSICION_STOCK_ALMACEN = "reposicion-stock-almacen";
 
     // Cantidad mínima de stock para activar la reposición (de application.properties)
     public static final Integer STOCK_MINIMO_REPOSICION = 100;

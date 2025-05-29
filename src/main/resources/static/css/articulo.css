@@ -1,52 +1,164 @@
-.article-name {
-    font-size: 2.5rem; /* Tamaño grande */
-    font-weight: bold;
-    margin-bottom: 1rem;
-    /* Considera la fuente 'Italiana' si quieres usarla aquí */
-    /* font-family: 'Italiana', sans-serif; */
+/* src/main/resources/static/css/articulo.css */
+
+/* Contenedor principal de la página de detalle del artículo */
+.article-detail-container {
+    padding-top: 30px;
+    padding-bottom: 50px;
+    max-width: 1000px; /* Limita el ancho para pantallas grandes */
 }
 
-.article-details-grid {
-    display: grid;
-    grid-template-columns: auto 1fr; /* Columna para label, columna para valor */
-    gap: 0.5rem 1rem; /* Espacio entre filas y columnas */
-    align-items: center; /* Centrar verticalmente */
+/* Título principal de la página */
+.article-page-title {
+    font-family: 'Italiana', serif;
+    color: #343a40; /* Un gris oscuro para el texto */
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid #007bff; /* Un subrayado de color primario */
+    padding-bottom: 10px;
+    display: inline-block; /* Para que el borde sea solo del texto */
 }
 
-.article-details-grid strong {
-    grid-column: 1; /* Asegura que el label esté en la primera columna */
-    text-align: left; /* Alinea el label a la izquierda */
-}
-
-.article-details-grid span {
-    grid-column: 2; /* Asegura que el valor esté en la segunda columna */
-}
-
-.size-selection-area {
-    /* Estilos para la sección de talla y botón de reposición */
-    border-top: 1px solid #eee; /* Separador visual */
-    padding-top: 1rem;
-    margin-top: 1rem;
+/* Estilo de la tarjeta principal del artículo */
+.article-card-wrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+    padding: 30px;
     display: flex;
-    flex-direction: column; /* Elementos apilados */
-    gap: 0.5rem; /* Espacio entre elementos */
+    align-items: center; /* Alinea verticalmente los elementos */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
 }
 
-/* Estilo básico para el placeholder de foto */
-.article-photo-placeholder {
-    background-color: #eee; /* Color gris claro */
-    color: #666;
-    font-size: 1.2rem;
+/* Columna de la imagen */
+.article-image-col {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 250px; /* Altura fija o ajusta según necesites */
-    width: 100%; /* O auto, dependiendo del contenedor */
-    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+    padding: 20px;
 }
 
+/* Estilo de la imagen del artículo */
 .article-photo {
     max-width: 100%;
     height: auto;
-    object-fit: cover;
+    border: 1px solid #e0e0e0;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.article-photo:hover {
+    transform: scale(1.02); /* Efecto ligero al pasar el ratón */
+}
+
+/* Placeholder para cuando no hay foto */
+.article-photo-placeholder {
+    width: 250px; /* Tamaño fijo para el placeholder */
+    height: 250px;
+    background-color: #f8f9fa;
+    border: 2px dashed #ced4da;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #6c757d;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+/* Columna de detalles del artículo */
+.article-details-col {
+    padding-left: 30px;
+}
+
+/* Nombre del artículo */
+.article-name {
+    font-family: 'Italiana', serif;
+    font-size: 2.2rem;
+    color: #495057;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* Cuadrícula de detalles del artículo */
+.article-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Columnas responsivas */
+    gap: 15px 25px; /* Espaciado entre filas y columnas */
+    font-size: 1.1rem;
+    color: #495057;
+}
+
+.detail-item strong {
+    color: #212529; /* Color más oscuro para las etiquetas */
+    display: block; /* Cada etiqueta en su propia línea */
+    margin-bottom: 5px; /* Espacio entre etiqueta y valor */
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item span {
+    font-weight: normal;
+    color: #6c757d;
+}
+
+/* Estilos específicos para precio y stock */
+.price-item span {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #28a745; /* Verde para el precio */
+}
+
+.stock-item span {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #dc3545; /* Rojo para stock bajo, puedes cambiarlo dinámicamente con JS si quieres */
+    /* Puedes añadir lógica para cambiar color si stock > X es verde, si stock < Y es rojo */
+}
+
+/* Área de botones de acción */
+.action-buttons-area {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: center;
+}
+
+.order-button {
+    background-color: #007bff; /* Color primario de Bootstrap */
+    border-color: #007bff;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.order-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Área del botón de volver */
+.back-button-area {
+    margin-top: 40px;
+}
+
+.return-button {
+    background-color: #6c757d; /* Color secundario de Bootstrap */
+    border-color: #6c757d;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.return-button:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
 }
