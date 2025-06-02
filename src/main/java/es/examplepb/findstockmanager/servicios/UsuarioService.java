@@ -48,7 +48,7 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email);
     }
 
-    // Podrías añadir un método para guardar usuarios aquí si no usas AdminService para eso,
-    // pero si usas AdminService, asegúrate de que ese método también codifica la contraseña.
-    // (Ya hemos hecho ese cambio en AdminServiceImpl)
+    public UsuarioEntity save(UsuarioEntity usuario) {
+        return usuarioRepository.save(usuario);
+    }
 }

@@ -156,7 +156,7 @@ public class PedidoScheduler {
             return;
         }
 
-        // Obtener el tipo de pedido "almacen-tienda"
+        // Obtener el tipo de pedido "almacen-tienda" (que ahora sabemos que es para Tienda -> Tienda)
         Optional<TipoPedidoEntity> tipoTiendaOpt = tipoPedidoRepository.findByDescripcionTipo(Constants.TIPO_ALMACEN_TIENDA);
         if (tipoTiendaOpt.isEmpty()) {
             log.error("No se encontró el tipo de pedido '{}'. No se pueden generar pedidos a tienda.", Constants.TIPO_ALMACEN_TIENDA);
@@ -178,22 +178,25 @@ public class PedidoScheduler {
             log.error("No se encontró el usuario del sistema con email '{}'. No se pueden generar pedidos a tienda.", Constants.SYSTEM_USER_EMAIL);
             return;
         }
-        UsuarioEntity usuarioSistema = usuarioSistemaOpt.get(); // Se obtiene, pero no se usará para setear en PedidoEntity
+        // UsuarioEntity usuarioSistema = usuarioSistemaOpt.get(); // Se obtiene, pero no se usará para setear en PedidoEntity
 
-        // Obtener el almacén de origen (el único almacén existente)
-        // CORREGIDO: Buscar por nombre en lugar de ID fijo
-        Optional<AlmacenEntity> almacenOrigenOpt = almacenRepository.findByNombreAlmacen("Almacén Principal");
-        if (almacenOrigenOpt.isEmpty()) {
-            log.error("No se encontró el almacén con nombre 'Almacén Principal'. No se pueden generar pedidos a tienda.");
+
+        // ***********************************************************************************
+        // CAMBIOS CRUCIALES AQUÍ PARA ASIGNAR ORIGEN Y DESTINO COMO TIENDAS
+        // ***********************************************************************************
+
+        // Obtener las tiendas de origen y destino (pueden ser las mismas o diferentes)
+        // Por simplicidad, tomaremos Tienda A como origen y Tienda B como destino para un ejemplo más claro
+        Optional<TiendaEntity> tiendaOrigenOpt = tiendaRepository.findByNombreTienda("Tienda A"); // O cualquier otra lógica para obtener la tienda de origen
+        if (tiendaOrigenOpt.isEmpty()) {
+            log.error("No se encontró la tienda de origen 'Tienda A'. No se pueden generar pedidos a tienda.");
             return;
         }
-        AlmacenEntity almacenOrigen = almacenOrigenOpt.get();
+        TiendaEntity tiendaOrigen = tiendaOrigenOpt.get();
 
-        // Obtener la tienda de destino (la única tienda existente)
-        // CORREGIDO: Buscar por nombre en lugar de ID fijo
-        Optional<TiendaEntity> tiendaDestinoOpt = tiendaRepository.findByNombreTienda("Tienda A");
+        Optional<TiendaEntity> tiendaDestinoOpt = tiendaRepository.findByNombreTienda("Tienda B"); // O cualquier otra lógica para obtener la tienda de destino
         if (tiendaDestinoOpt.isEmpty()) {
-            log.error("No se encontró la tienda con nombre 'Tienda A'. No se pueden generar pedidos a tienda.");
+            log.error("No se encontró la tienda de destino 'Tienda B'. No se pueden generar pedidos a tienda.");
             return;
         }
         TiendaEntity tiendaDestino = tiendaDestinoOpt.get();
@@ -203,17 +206,17 @@ public class PedidoScheduler {
         PedidoEntity nuevoPedido = new PedidoEntity();
         nuevoPedido.setTipo(tipoTienda);
         nuevoPedido.setEstado(estadoPendiente);
-        nuevoPedido.setOrigenTiendaEntity(null);
-        nuevoPedido.setDestinoTiendaEntity(tiendaDestino); // Destino es la tienda
-        nuevoPedido.setOrigenAlmacenEntity(almacenOrigen); // Origen es el almacén
-        nuevoPedido.setDestinoAlmacenEntity(null);
-        // ELIMINADO: nuevoPedido.setUsuarioEntity(usuarioSistema); // Esta línea ha sido eliminada
+        nuevoPedido.setOrigenTiendaEntity(tiendaOrigen);   // Establecer la tienda de origen
+        nuevoPedido.setDestinoTiendaEntity(tiendaDestino); // Establecer la tienda de destino
+        nuevoPedido.setOrigenAlmacenEntity(null);          // Asegurarse de que el almacén de origen sea null
+        nuevoPedido.setDestinoAlmacenEntity(null);         // Asegurarse de que el almacén de destino sea null
         nuevoPedido.setFechaSolicitud(LocalDate.now());
         nuevoPedido.setFechaRecepcion(null);
         nuevoPedido.setFechaEnvio(null);
 
+        // ... (resto del código del método, que parece correcto)
         PedidoEntity pedidoGuardado = pedidoRepository.save(nuevoPedido);
-        log.info("Pedido a tienda creado con ID: {}", pedidoGuardado.getId());
+        log.info("Pedido a tienda creado con ID: {} (Origen: {}, Destino: {})", pedidoGuardado.getId(), tiendaOrigen.getNombreTienda(), tiendaDestino.getNombreTienda());
 
         // Generar entre 1 y 3 líneas de pedido aleatorias
         int numArticulosEnPedido = random.nextInt(3) + 1; // 1, 2 o 3 artículos
@@ -227,7 +230,7 @@ public class PedidoScheduler {
                 articulosSeleccionados.add(articuloAleatorio);
             } else {
                 if (todosLosArticulos.size() > articulosSeleccionados.size()) {
-                    i--;
+                    i--; // Volver a intentar seleccionar si ya está contenido y hay más artículos
                 }
             }
         }

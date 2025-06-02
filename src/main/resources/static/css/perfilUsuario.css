@@ -1,0 +1,158 @@
+/* src/main/resources/static/css/perfilUsuario.css */
+
+/* Contenedor principal de la tarjeta de perfil */
+.user-profile-container {
+    max-width: 900px; /* Ancho máximo del contenedor principal del perfil */
+    margin: 50px auto; /* Centra el contenedor horizontalmente y le da margen superior/inferior */
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Centra el contenido general de la tarjeta si es necesario */
+}
+
+/* Contenedor de la tarjeta del perfil (card-wrapper) */
+.profile-card-wrapper {
+    background-color: #f8f9fa; /* Un fondo ligero para la tarjeta interior */
+    border-radius: 10px;
+    padding: 20px;
+    overflow: hidden;
+    display: flex; /* Usamos flexbox para el diseño de las columnas */
+    flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
+    justify-content: center; /* Centra las columnas horizontalmente */
+    align-items: flex-start; /* Alinea las columnas al inicio verticalmente */
+}
+
+/* Columna que contiene la imagen de perfil (avatar) */
+.profile-avatar-col {
+    flex: 0 0 auto; /* No crece, no se encoge, tamaño automático */
+    width: 250px; /* Ancho fijo para la columna de la imagen para que sea cuadrada */
+    margin: 0 auto 20px auto; /* Centra la columna de la imagen y añade margen inferior */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido (imagen, nombre, email) */
+    justify-content: flex-start; /* Alinea al inicio verticalmente */
+    padding: 0 15px; /* Pequeño padding horizontal para no pegarse a los bordes */
+}
+
+/* Estilo para la imagen de perfil real (el <img>) */
+.profile-avatar {
+    width: 200px; /* Ancho fijo para la imagen */
+    height: 200px; /* Altura fija para la imagen, para que sea un círculo o cuadrado */
+    object-fit: cover; /* Recorta la imagen para cubrir el área sin distorsionarse */
+    border-radius: 50%; /* Hace la imagen circular */
+    border: 3px solid #007bff; /* Borde al color primario */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px; /* Espacio entre la imagen y el nombre */
+}
+
+/* Si usas el icono de usuario genérico */
+.profile-avatar-icon {
+    font-size: 8em; /* Tamaño del icono */
+    color: #6c757d; /* Color del icono */
+    margin-bottom: 15px;
+}
+
+/* Estilo para el nombre y email debajo de la foto */
+.profile-name {
+    font-size: 1.8em;
+    font-family: 'Italiana', serif;
+    color: #343a40;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.profile-email {
+    font-size: 1em;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Columna de detalles del perfil */
+.profile-details-col {
+    flex: 1; /* Permite que esta columna ocupe el espacio restante */
+    min-width: 300px; /* Ancho mínimo para que los detalles no se compriman demasiado */
+    max-width: 600px; /* Ancho máximo para la columna de detalles */
+    margin: 0 auto; /* Centra la columna de detalles */
+    padding: 0 15px; /* Pequeño padding horizontal */
+    text-align: left; /* Alinea el texto de los detalles a la izquierda */
+}
+
+.details-title {
+    font-size: 1.6em;
+    font-family: 'Italiana', serif;
+    color: #343a40;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+    text-align: center; /* Centra el título de los detalles */
+}
+
+.profile-details-grid {
+    display: grid;
+    /* Para que los elementos de detalles estén en una sola línea */
+    grid-template-columns: auto 1fr; /* La primera columna (etiqueta) toma el ancho que necesita, la segunda (valor) el resto */
+    gap: 10px 15px; /* Espacio vertical y horizontal entre los elementos */
+    align-items: center; /* Alinea verticalmente el texto de la etiqueta y el valor */
+    justify-content: center; /* Centra el grid horizontalmente */
+    width: fit-content; /* El grid ocupará el ancho que necesite su contenido */
+    margin: 0 auto; /* Centra el grid dentro de su columna */
+}
+
+.detail-item {
+    display: contents; /* Hace que los hijos (strong y span) sean los elementos del grid directamente */
+}
+
+.detail-item strong {
+    color: #495057;
+    text-align: right; /* Alinea las etiquetas a la derecha */
+    white-space: nowrap; /* Evita que las etiquetas se rompan en varias líneas */
+}
+
+.detail-item span {
+    color: #212529;
+    text-align: left; /* Alinea los valores a la izquierda */
+}
+
+/* Media query para pantallas más grandes, ajustando la disposición en columnas */
+@media (min-width: 768px) {
+    .profile-card-wrapper {
+        flex-direction: row; /* Vuelve a poner las columnas en fila */
+        justify-content: space-around; /* Distribuye el espacio entre ellas */
+    }
+
+    .profile-avatar-col {
+        margin: 0; /* Quita el margen auto para que se posicione con flexbox */
+        padding-right: 30px; /* Espacio a la derecha de la columna del avatar */
+    }
+
+    .profile-details-col {
+        margin: 0; /* Quita el margen auto */
+        padding-left: 30px; /* Espacio a la izquierda de la columna de detalles */
+    }
+
+    .details-title {
+        text-align: left; /* El título de los detalles se alinea a la izquierda en pantallas grandes */
+    }
+
+    .profile-details-grid {
+        /* En pantallas grandes, sigue siendo 2 columnas para etiqueta-valor, pero el grid en sí se alinea a la izquierda de la columna */
+        margin: 0; /* Descentra el grid */
+    }
+}
+
+/* Botones de acción y retorno */
+.profile-actions {
+    margin-top: 30px; /* Más espacio superior para los botones de acción */
+    text-align: center;
+}
+
+.return-button {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.return-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}

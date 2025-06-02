@@ -27,11 +27,20 @@
             </div>
         </div>
 
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <div class="article-card-wrapper p-3 mb-3">
             <div class="row">
                 <div class="col-md-5 text-center mb-3 mb-md-0 article-image-col">
                     <img th:if="${articuloEntity?.fotografiaArt != null and articuloEntity?.fotografiaArt != ''}"
-                         th:src="@{'/images/' + ${articuloEntity.fotografiaArt}}"
+                         th:src="@{'/imagenes-articulos/' + ${articuloEntity.fotografiaArt}}"
                          alt="Fotografía del Artículo" class="img-fluid rounded article-photo">
                     <div th:unless="${articuloEntity?.fotografiaArt != null and articuloEntity?.fotografiaArt != ''}"
                          class="article-photo-placeholder rounded">
@@ -63,7 +72,11 @@
                     </div>
 
                     <div class="action-buttons-area mt-4 text-center text-md-start">
-                        <button class="btn btn-primary order-button">Pedir reposición</button>
+                        <button type="button" class="btn btn-primary order-button" id="pedirReposicionBtn"
+                                th:attr="data-articulo-id=${articuloEntity?.id}"
+                                th:data-articulo-nombre="${articuloEntity?.nombreArticulo}">
+                            Pedir reposición
+                        </button>
                     </div>
                 </div>
             </div>
@@ -79,6 +92,158 @@
 <footer class="footer-bar">
 </footer>
 
+<div class="modal fade" id="restockModal" tabindex="-1" aria-labelledby="restockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restockModalLabel">Pedir Reposición para <span
+                        id="modalArticuloNombre"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="restockForm">
+                    <div class="mb-3">
+                        <label for="cantidadReponer" class="form-label">¿Cuántas unidades quieres encargar?</label>
+                        <input type="number" class="form-control" id="cantidadReponer" name="cantidad" min="1" max="150"
+                               value="1" required>
+                        <div class="invalid-feedback">
+                            Por favor, introduce una cantidad válida (entre 1 y 150).
+                        </div>
+                    </div>
+                    <input type="hidden" id="modalArticuloId" name="articuloId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmRestockBtn">Encargar Reposición</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const restockModalElement = document.getElementById('restockModal'); // Cambiado a Element
+        const modalArticuloNombre = document.getElementById('modalArticuloNombre');
+        const modalArticuloId = document.getElementById('modalArticuloId');
+        const cantidadReponerInput = document.getElementById('cantidadReponer');
+        const confirmRestockBtn = document.getElementById('confirmRestockBtn');
+        const pedirReposicionBtn = document.getElementById('pedirReposicionBtn'); // Nuevo: el botón que abre el modal
+        const restockForm = document.getElementById('restockForm');
+        let currentArticuloId = null;
+
+        // **IMPORTANTE**: Inicializar el modal de Bootstrap
+        const restockModal = new bootstrap.Modal(restockModalElement); // Crea una instancia de Modal
+
+        // Limpiar mensajes de éxito/error al cerrar el modal
+        const dismissAlerts = () => {
+            const successAlert = document.querySelector('.alert-success');
+            const errorAlert = document.querySelector('.alert-danger');
+            if (successAlert) {
+                new bootstrap.Alert(successAlert).close();
+            }
+            if (errorAlert) {
+                new bootstrap.Alert(errorAlert).close();
+            }
+        };
+
+        // Escuchar el evento de clic del botón "Pedir reposición"
+        if (pedirReposicionBtn) { // Asegurarse de que el botón existe
+            pedirReposicionBtn.addEventListener('click', function () {
+                currentArticuloId = this.getAttribute('data-articulo-id'); // 'this' se refiere al botón
+                const articuloNombre = this.getAttribute('data-articulo-nombre');
+
+                modalArticuloId.value = currentArticuloId;
+                modalArticuloNombre.textContent = articuloNombre;
+                cantidadReponerInput.value = 1; // Resetea la cantidad a 1
+                cantidadReponerInput.classList.remove('is-invalid'); // Limpiar validación
+                dismissAlerts(); // Limpiar mensajes al abrir el modal
+
+                restockModal.show(); // Abre el modal programáticamente
+            });
+        }
+
+
+        // Escuchar el evento de mostrar el modal de Bootstrap (aún útil para lógica que necesita saber que el modal se está mostrando)
+        restockModalElement.addEventListener('show.bs.modal', function (event) {
+            // El `event.relatedTarget` solo funciona si el modal se abre con data-attributes.
+            // Como ahora lo abrimos programáticamente, la info ya la tenemos en el click del botón.
+            // Esta parte ya no es tan crítica para obtener los datos del artículo,
+            // pero es útil para otros eventos de Bootstrap.
+            console.log("Modal de reposición se está mostrando.");
+        });
+
+        // Escuchar el evento de cerrar el modal
+        restockModalElement.addEventListener('hide.bs.modal', function () {
+            dismissAlerts(); // Limpiar mensajes al cerrar el modal
+        });
+
+        confirmRestockBtn.addEventListener('click', function () {
+            const cantidad = parseInt(cantidadReponerInput.value, 10);
+
+            if (isNaN(cantidad) || cantidad < 1 || cantidad > 150) {
+                cantidadReponerInput.classList.add('is-invalid');
+                return;
+            } else {
+                cantidadReponerInput.classList.remove('is-invalid');
+            }
+
+            // Realizar la solicitud POST al backend
+            fetch('/pedidos/crear-reposicion-manual', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Incluir CSRF token si estás usando Spring Security
+                    // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content,
+                },
+                body: JSON.stringify({
+                    articuloId: currentArticuloId,
+                    cantidad: cantidad
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.error || 'Error desconocido al procesar la solicitud.');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Ocultar el modal
+                    restockModal.hide(); // Usa la instancia de modal
+
+                    // Mostrar mensaje de éxito en la página principal
+                    const mainContent = document.querySelector('main.main-content');
+                    const successAlertHtml = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <span>${data.message}</span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                          </div>`;
+                    mainContent.insertAdjacentHTML('afterbegin', successAlertHtml);
+                    setTimeout(() => {
+                        const alert = document.querySelector('.alert-success');
+                        if (alert) new bootstrap.Alert(alert).close();
+                    }, 5000);
+                })
+                .catch(error => {
+                    // Ocultar el modal
+                    restockModal.hide(); // Usa la instancia de modal
+
+                    // Mostrar mensaje de error en la página principal
+                    const mainContent = document.querySelector('main.main-content');
+                    const errorAlertHtml = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                          <span>Error: ${error.message}</span>
+                                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>`;
+                    mainContent.insertAdjacentHTML('afterbegin', errorAlertHtml);
+                    setTimeout(() => {
+                        const alert = document.querySelector('.alert-danger');
+                        if (alert) new bootstrap.Alert(alert).close();
+                    }, 5000);
+                });
+        });
+    });
+</script>
 </body>
 </html>

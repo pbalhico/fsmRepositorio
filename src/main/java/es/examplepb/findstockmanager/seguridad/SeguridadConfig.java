@@ -47,25 +47,47 @@ public class SeguridadConfig {
     }
 
     @Bean
-    @Order(2)
-    public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
+    @Order(2) // Se aplica después de la cadena de H2
+    public SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                // Deshabilitar CSRF (considera habilitarlo en producción)
+                .csrf(AbstractHttpConfigurer::disable) // Deshabilita CSRF completamente para la aplicación.
+                // ¡Cuidado! En producción, deberías configurarlo correctamente o habilitarlo.
+
+                // Define las reglas de autorización para las rutas
                 .authorizeHttpRequests(auth -> auth
+                        // Rutas estáticas y páginas públicas
                         .requestMatchers("/", "/webjars/**", "/index", "/listaPedidosTienda", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        // Rutas de login/logout
                         .requestMatchers("/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .anyRequest().authenticated())
+                        // Rutas específicas de tu aplicación
+                        .requestMatchers("/articulos/{id}").permitAll() // Permite acceso a /articulos/{id} para ver el detalle
+                        // Protege el nuevo endpoint para crear pedidos manuales
+                        .requestMatchers(HttpMethod.POST, "/pedidos/crear-reposicion-manual").authenticated() // Roles para tu endpoint
+                        // Aquí puedes añadir más reglas específicas con .requestMatchers().hasRole/hasAnyRole etc.
+                        // EJEMPLO: .requestMatchers("/pedidos/**").hasAnyRole("ALMACENERO", "ADMIN")
+                        // Cualquier otra solicitud requiere autenticación
+                        .anyRequest().authenticated()
+                )
+                // Configura el formulario de login
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error").permitAll())
+                        .loginProcessingUrl("/login") // URL a la que se envía el formulario de login (Spring Security la maneja)
+                        .defaultSuccessUrl("/", true) // Redirigir a la raíz después de login exitoso
+                        .failureUrl("/login?error") // Redirigir en caso de login fallido
+                        .permitAll() // Permite el acceso a la página de login y al proceso de login
+                )
+                // Configura el logout
                 .logout(out -> out
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true).permitAll());
+                        .logoutUrl("/logout") // URL para cerrar sesión
+                        .logoutSuccessUrl("/login?logout") // Redirigir después de cerrar sesión
+                        .invalidateHttpSession(true) // Invalidar sesión
+                        .deleteCookies("JSESSIONID") // Eliminar cookies de sesión
+                        .permitAll() // Permite acceso a la URL de logout
+                );
+
         return http.build();
     }
 

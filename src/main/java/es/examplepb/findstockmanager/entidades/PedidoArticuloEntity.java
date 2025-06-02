@@ -3,9 +3,12 @@ package es.examplepb.findstockmanager.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "pedido_articulo")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -31,4 +34,17 @@ public class PedidoArticuloEntity {
 
     @Column(name = "recibido", nullable = false)
     private Boolean recibido; // Indica si el artículo ha sido recibido o no
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PedidoArticuloEntity that = (PedidoArticuloEntity) o;
+        return Objects.equals(id, that.id); // Solo compara por el ID compuesto
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // Solo usa el hash del ID compuesto
+    }
 }

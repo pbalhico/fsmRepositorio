@@ -18,12 +18,20 @@
                     <span class="d-none d-md-inline" th:text="${usuarioAutenticado?.nombre}">Nombre Usuario</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/usuario/perfil}" id="lnkPerfilUsuario">
+                            <i class="fas fa-id-card"></i> Mi Perfil
+                        </a>
+                    </li>
+                    <li sec:authorize="hasAuthority('manager')">
+                        <hr class="dropdown-divider">
+                    </li>
                     <li sec:authorize="hasAuthority('manager')">
                         <a class="dropdown-item" th:href="@{/admin/usuarios}" id="lnkAddUser">
                             <i class="fas fa-user-plus"></i> Añadir Usuario
                         </a>
                     </li>
-                    <li sec:authorize="hasAuthority('manager')">
+                    <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li>
@@ -58,7 +66,8 @@
             </a>
 
             <a th:href="@{/articulos/lista}">Listado Artículos Almacén Central</a>
-            <a th:href="@{/}">Añadir Nuevo Articulo</a>
+
+            <a th:href="@{/articulos/nuevo}">Añadir Nuevo Articulo</a>
         </div>
     </div>
 </header>

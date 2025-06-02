@@ -1,42 +1,47 @@
 package es.examplepb.findstockmanager.servicios;
 
-import es.examplepb.findstockmanager.entidades.ArticuloEntity; // Importa la entidad Articulo
-import es.examplepb.findstockmanager.entidades.SeccionEntity; // Importa la entidad Seccion
-import es.examplepb.findstockmanager.repositorios.ArticuloRepository; // Importa el repositorio de Articulo
+import es.examplepb.findstockmanager.dto.ArticuloDto;
+import es.examplepb.findstockmanager.entidades.ArticuloEntity;
+import es.examplepb.findstockmanager.entidades.SeccionEntity;
+import es.examplepb.findstockmanager.mappers.ArticuloMapper;
+import es.examplepb.findstockmanager.repositorios.ArticuloRepository;
+import es.examplepb.findstockmanager.repositorios.SeccionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.domain.Specification; // Importa Specification
-import org.springframework.data.domain.Sort; // Importa Sort
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils; // Utilidad para chequear Strings
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import jakarta.persistence.criteria.Join; // Importa Join
-import jakarta.persistence.criteria.Predicate; // Importa Predicate de JPA
-import jakarta.persistence.criteria.Root; // Importa Root de JPA
-import jakarta.persistence.criteria.CriteriaQuery; // Importa CriteriaQuery de JPA
-import jakarta.persistence.criteria.CriteriaBuilder; // Importa CriteriaBuilder de JPA
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor // Lombok para inyección de dependencias del repositorio
-@Slf4j // Lombok para logging
-public class ArticuloServiceImpl implements ArticuloService {
+@Service // ¡Esta anotación va aquí para que Spring la gestione como un bean!
+@RequiredArgsConstructor // Para la inyección de dependencias en el constructor
+@Slf4j // Para el logging
+public class ArticuloServiceImpl implements ArticuloService { // ¡Ahora implementa la interfaz!
 
     private final ArticuloRepository articuloRepository;
+    private final ArticuloMapper articuloMapper;
+    private final SeccionRepository seccionRepository;
 
-    @Override
+    @Override // Indica que este método implementa uno de la interfaz
     public List<ArticuloEntity> findAll() {
-        return articuloRepository.findAll(); // Implementación simple
+        return articuloRepository.findAll();
     }
 
     @Override
     public ArticuloEntity findById(String id) {
         log.info("Buscando artículo con ID: {}", id);
-        // Usa el repositorio para buscar por ID. JpaRepository ya proporciona findById.
-        return articuloRepository.findById(id).orElse(null); // Usa orElse(null) si el método de servicio retorna null
+        return articuloRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -49,13 +54,30 @@ public class ArticuloServiceImpl implements ArticuloService {
         return articuloRepository.findAll(spec, sort);
     }
 
+    @Override
+    @Transactional // Aplica la transaccionalidad aquí en la implementación
+    public ArticuloEntity saveNewArticulo(ArticuloDto articuloDto) {
+        log.info("Guardando nuevo artículo con ID: {}", articuloDto.getId());
+
+        ArticuloEntity articuloEntity = articuloMapper.toEntity(articuloDto);
+
+        seccionRepository.findById(articuloDto.getSeccionId())
+                .ifPresentOrElse(
+                        articuloEntity::setSeccionEntity,
+                        () -> {
+                            throw new IllegalArgumentException("Sección con ID " + articuloDto.getSeccionId() + " no encontrada.");
+                        }
+                );
+
+        return articuloRepository.save(articuloEntity);
+    }
+
     private Specification<ArticuloEntity> buildSpecification(String seccionId, String idArticulo) {
         return new Specification<ArticuloEntity>() {
             @Override
             public Predicate toPredicate(Root<ArticuloEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
 
-                // Filtro por Sección
                 if (StringUtils.hasText(seccionId)) {
                     Join<ArticuloEntity, SeccionEntity> seccionJoin = root.join("seccionEntity");
                     try {
